@@ -26,7 +26,7 @@ LocalExecutor.prototype.execute = function( serviceRequest, callback ) {
 
 LocalExecutor.prototype.executeLocalCommand = function( localServiceCommand, callback ) {
 
-    var serviceResponse = new ServiceResponse();
+    var serviceResponse = new ServiceResponse(localServiceCommand.sessionId);
 
 
     var output = '';
@@ -79,8 +79,8 @@ LocalExecutor.prototype.executeLocalCommand = function( localServiceCommand, cal
     });
 
     if(isAsync == true){
-        serviceResponse.data = output;
         callback( serviceResponse.getApiResponse() );
+
     }
 
     return pwd;

@@ -2,7 +2,7 @@
  * Created by priit on 28.05.15.
  */
 
-function ServiceResponse(){
+function ServiceResponse( serviceId ){
 
     this.messages = {
         OK: "OK",
@@ -10,7 +10,7 @@ function ServiceResponse(){
         NOT_FOUND: "NOT_FOUND"
     };
 
-    this.serviceId = null;
+    this.serviceId = serviceId;
     this.success = true;
     this.message = this.messages.OK;
     this.recheckInterval = 5;
@@ -29,9 +29,9 @@ ServiceResponse.prototype.getApiResponse = function(){
     response.success = this.success;
     response.message = this.message;
     response.recheckInterval = this.recheckInterval;
-    response.data = this.data;
 
-    if(response.data){
+    if(this.data){
+        response.data = this.data;
         response.contentType = this.contentType;
     }
 
