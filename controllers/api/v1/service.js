@@ -14,6 +14,10 @@ router.post('/', function (req, res, next) {
 router.get('/:instanceId', function(req, res, next) {
 
     var executor = new ExecutorService();
+
+    console.log(req.params.instanceId);
+
+
     executor.getServiceResponse(req.params.instanceId, function (data) {
         res.send(data);
     });

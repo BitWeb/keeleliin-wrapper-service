@@ -2,7 +2,7 @@
  * Created by priit on 28.05.15.
  */
 var config = require('../../config');
-var session = require('../service/session');
+var sessionService = require('../service/sessionService');
 
 function ServiceConfig( requestData ) {
     this.queryData = JSON.parse(JSON.stringify(config.service.serviceRequestTemplate)); //clone default
@@ -24,7 +24,7 @@ ServiceConfig.prototype.mapMetaOptions = function () {
     if(this.requestData.service.meta.sessionId){
         this.queryData.service.meta.sessionId = this.requestData.service.meta.sessionId;
     } else {
-        this.queryData.service.meta.sessionId = session.generateId();
+        this.queryData.service.meta.sessionId = sessionService.generateId();
     }
 };
 

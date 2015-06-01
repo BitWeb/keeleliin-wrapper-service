@@ -3,7 +3,7 @@
  */
 
 var config = require('../../config');
-var session = require('../service/session');
+var sessionService = require('../service/sessionService');
 
 function LocalServiceCommand( queryData ) {
 
@@ -25,7 +25,7 @@ function LocalServiceCommand( queryData ) {
 
 LocalServiceCommand.prototype.generateLocalCommand = function( callback ){
     var self = this;
-    this.parseParams(function (data) {
+    this._parseParams(function (data) {
         var paramsArray = data.slice(data);
         self.command = paramsArray.shift();
         paramsArray = paramsArray.filter(function(n){ return n != '' && n != 'null' });
@@ -34,15 +34,15 @@ LocalServiceCommand.prototype.generateLocalCommand = function( callback ){
     });
 };
 
-LocalServiceCommand.prototype.parseParams = function (callback ) {
+LocalServiceCommand.prototype._parseParams = function (callback ) {
     if(this.templateParams.length != 0 ){
-        this.parseOnIndex(0,  callback );
+        this._parseOnIndex(0,  callback );
     } else {
         callback( this.commandParts );
     }
 };
 
-LocalServiceCommand.prototype.parseOnIndex = function (index, callback ) {
+LocalServiceCommand.prototype._parseOnIndex = function (index, callback ) {
     var self = this;
 
     var propertyItem = this.templateParams[index];
@@ -55,21 +55,21 @@ LocalServiceCommand.prototype.parseOnIndex = function (index, callback ) {
 
     console.log('Property item: ' + propertyItem);
 
-    this.getPropertyValue( propertyKey, function ( value ){
-        self.replacePropertyValue(propertyItem, value);
+    this._getPropertyValue( propertyKey, function ( value ){
+        self._replacePropertyValue(propertyItem, value);
         index++;
-        self.parseOnIndex(index,  callback );
+        self._parseOnIndex(index,  callback );
     });
 };
 
-LocalServiceCommand.prototype.replacePropertyValue = function(propertyItem, value){
+LocalServiceCommand.prototype._replacePropertyValue = function(propertyItem, value){
     for(i in this.commandParts){
         var part = this.commandParts[i];
         this.commandParts[i] = part.replace( propertyItem, value);
     }
 };
 
-LocalServiceCommand.prototype.getPropertyValue = function (property, callback) {
+LocalServiceCommand.prototype._getPropertyValue = function (property, callback) {
 
     console.log('Get property value: ' + property);
 
@@ -90,7 +90,7 @@ LocalServiceCommand.prototype.getPropertyValue = function (property, callback) {
     if(mappingObject.usageType == config.paramUsageTypes.STRING){
         callback( propertyValue );
     } else if(mappingObject.usageType == config.paramUsageTypes.FILE){
-        session.storeToFile(this.queryData.service.meta.sessionId, propertyValue, callback);
+        sessionService.storeToFile(this.queryData.service.meta.sessionId, propertyValue, callback);
     }
 };
 

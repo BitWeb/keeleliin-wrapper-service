@@ -42,6 +42,7 @@ var DaoService = function(){
     this.get = function(key, cb){
 
         self.client.hgetall(key, function(err, reply) {
+            console.log('Got redis data');
             console.log(reply);
             if(cb != undefined){
                 cb(reply);

@@ -1,13 +1,10 @@
 /**
  * Created by priit on 26.05.15.
  */
-var daoService = require('./daoService');
 var config = require('../../config');
 var ServiceConfig = require('../model/serviceConfig');
-var ServiceResponse = require('../model/serviceResponse');
-var LocalServiceCommand = require('../mapper/localServiceCommand');
 var LocalExecutor = require('./executor/localExecutor');
-
+var sessionService = require('./sessionService');
 
 function ExecutorService() {}
 
@@ -20,6 +17,14 @@ ExecutorService.prototype.execute = function(param, callback){
     } else {
         throw new Error('Type not defined');
     }
+};
+
+ExecutorService.prototype.getServiceResponse = function(instanceId, callback){
+
+    sessionService.getSession(instanceId, function(session){
+        sessionService.getApiResponse(session, callback);
+    });
+
 };
 
 module.exports = ExecutorService;
