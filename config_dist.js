@@ -21,6 +21,10 @@ config.paramUsageTypes = {
     FILE : 'file' //parameeteri väärtus salvestatakse faili ja faili pathi kasutatakse argumendina
 };
 
+config.paramEncodings = {
+    BASE64 : 'base64'
+};
+
 config.service = {
     title: 'Teenuse wrapper',
     description: 'Wrapperi kirjeldus',
@@ -41,8 +45,8 @@ config.service = {
             },
             params: { //key: value
                 showLineNumbers: 'yes',
-                query: '',
-                data: ''
+                query: null,
+                data: null
             }
         }
     },
@@ -50,19 +54,37 @@ config.service = {
     //Iga parameeter peab ka siin esindatud olema
     paramsMappings: {
         query: {
-            mapping: null,
-            usageType: config.paramUsageTypes.STRING
+            usageType: config.paramUsageTypes.STRING,
+            filter: function(value){ return value; },
+            required: true,
+            allowEmpty: false,
+            validator: function(value, request){ return true; },
+            encoding: null
         },
         showLineNumbers: {
-            mapping: { //key: value
-                yes: '-n',
-                no: null
+            usageType: config.paramUsageTypes.STRING,
+            filter: function(value){
+                var mapping = {
+                    yes: '-n',
+                    no: null
+                };
+                if(mapping[value]){
+                    return mapping[value];
+                }
+                return null;
             },
-            usageType: config.paramUsageTypes.STRING
+            required: false,
+            allowEmpty: true,
+            validator: function(value, request){ return true; },
+            encoding: null
         },
         data: {
-            mapping: null,
-            usageType: config.paramUsageTypes.FILE
+            usageType: config.paramUsageTypes.FILE,
+            filter: function(value){ return value; },
+            required: true,
+            allowEmpty: false,
+            validator: function(value, request){ return true; },
+            encoding: config.paramEncodings.BASE64
         }
     }
 };
