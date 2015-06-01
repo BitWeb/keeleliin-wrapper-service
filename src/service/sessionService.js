@@ -170,16 +170,16 @@ SessionService.prototype._getApiResponseItem = function( session, callback ){
     response.contentType = session.contentType;
 
     if( session.outputPath ){
-        response.data = fs.readFile(session.outputPath, 'utf8', function (err, data) {
+        fs.readFile(session.outputPath, 'utf8', function (err, data) {
             if(err){
-                response.data = err;
+                response.data = new Buffer(err).toString('base64');
             } else {
-                response.data = data;
+                response.data = new Buffer(data).toString('base64');
             }
             callback( {response: response} );
         });
     } else {
-        response.data = session.data;
+        response.data = new Buffer(session.data).toString('base64');
         response.contentType = session.contentType;
         callback( {response: response} );
     }

@@ -9,12 +9,12 @@ var fs = require('fs');
 
 function LocalExecutor() {}
 
-LocalExecutor.prototype.execute = function( serviceConfig, callback ) {
+LocalExecutor.prototype.execute = function( serviceRequest, callback ) {
     var self = this;
 
-    sessionService.getSession( serviceConfig.queryData.service.meta.sessionId, function(session){
+    sessionService.getSession( serviceRequest.service.meta.sessionId, function(session){
 
-        var localServiceCommand = new LocalServiceCommand(serviceConfig.queryData);
+        var localServiceCommand = new LocalServiceCommand(serviceRequest);
 
         localServiceCommand.generateLocalCommand(function (data) {
             console.log("Command ready");
@@ -58,7 +58,11 @@ LocalExecutor.prototype.runSync = function( session, process, callback ) {
 
     process.on('close', function (code, signal) {
         console.log('child process terminated due to receipt of signal: '+signal +' code: ' + code);
-        session.message = Session.messages.OK;
+
+        if(code == 0){
+            session.message = Session.messages.OK;
+        }
+
         session.isFinished = true;
         sessionService.getApiResponse(session, callback);
     });
@@ -84,7 +88,10 @@ LocalExecutor.prototype.runAsync = function( session, process, callback ) {
 
     process.on('close', function (code, signal) {
         console.log('child process terminated due to receipt of signal: '+signal +' code: ' + code);
-        session.message = Session.messages.OK;
+        if(code == 0){
+            session.message = Session.messages.OK;
+        }
+
         session.isFinished = true;
 
         sessionService.saveSession(session, function(){

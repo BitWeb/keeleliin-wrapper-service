@@ -16,7 +16,6 @@ function LocalServiceCommand( queryData ) {
     this.templateParams = commandTemplate.match(/\[(.*?)]/g);
     this.commandParts = commandTemplate.split(' ');
 
-
     this.command = "";
     this.comandParams = [];
     this.sessionId = this.queryData.service.meta.sessionId;
@@ -28,8 +27,7 @@ LocalServiceCommand.prototype.generateLocalCommand = function( callback ){
     this._parseParams(function (data) {
         var paramsArray = data.slice(data);
         self.command = paramsArray.shift();
-        paramsArray = paramsArray.filter(function(n){ return n != '' && n != 'null' });
-        self.comandParams = paramsArray;
+        self.comandParams = paramsArray.filter(function (value) { return value != ''; });
         return callback(data);
     });
 };
@@ -53,8 +51,6 @@ LocalServiceCommand.prototype._parseOnIndex = function (index, callback ) {
 
     var propertyKey = propertyItem.substr(1, (propertyItem.length - 2)); //eemaldab [ ja ]
 
-    console.log('Property item: ' + propertyItem);
-
     this._getPropertyValue( propertyKey, function ( value ){
         self._replacePropertyValue(propertyItem, value);
         index++;
@@ -63,6 +59,7 @@ LocalServiceCommand.prototype._parseOnIndex = function (index, callback ) {
 };
 
 LocalServiceCommand.prototype._replacePropertyValue = function(propertyItem, value){
+
     for(i in this.commandParts){
         var part = this.commandParts[i];
         this.commandParts[i] = part.replace( propertyItem, value);
@@ -75,23 +72,24 @@ LocalServiceCommand.prototype._getPropertyValue = function (property, callback) 
 
     var requestValue = this.queryData.service.params[property];
     var mappingObject = config.service.paramsMappings[property];
-    var propertyValue = null;
 
     if(mappingObject == null || mappingObject == undefined){
         throw new Error('Mapping not found for property: ' + property);
     }
 
-    if(mappingObject.mapping != null){
-        propertyValue = mappingObject.mapping[requestValue];
-    } else {
-        propertyValue = requestValue;
+    if(mappingObject.encoding == config.paramEncodings.BASE64){
+        requestValue = new Buffer(requestValue, 'base64');
     }
 
+    requestValue = requestValue == null ? '' : requestValue;
+
     if(mappingObject.usageType == config.paramUsageTypes.STRING){
-        callback( propertyValue );
+        callback( requestValue );
     } else if(mappingObject.usageType == config.paramUsageTypes.FILE){
-        sessionService.storeToFile(this.queryData.service.meta.sessionId, propertyValue, callback);
+        sessionService.storeToFile(this.queryData.service.meta.sessionId, requestValue, callback);
     }
 };
+
+
 
 module.exports = LocalServiceCommand;

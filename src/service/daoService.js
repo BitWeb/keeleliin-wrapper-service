@@ -28,7 +28,7 @@ var DaoService = function(){
 
     this.set =  function(key, value, cb){
 
-        self.client.hmset(key, value, function (err, reply) {
+        this.client.hmset(key, value, function (err, reply) {
             console.log(key + ' is set');
             console.log(err);
             console.log(reply);
@@ -41,7 +41,7 @@ var DaoService = function(){
 
     this.get = function(key, cb){
 
-        self.client.hgetall(key, function(err, reply) {
+        this.client.hgetall(key, function(err, reply) {
             console.log('Got redis data');
             console.log(reply);
             if(cb != undefined){
@@ -52,8 +52,7 @@ var DaoService = function(){
 
     this.delete = function(key, cb){
 
-        self.client.del('frameworks', function(err, reply) {
-            console.log(reply);
+        this.client.del(key, function(err, reply) {
             if(cb != undefined){
                 cb();
             }
@@ -62,13 +61,7 @@ var DaoService = function(){
 
     this.exists = function(key, cb){
 
-        self.client.exists(key, function(err, reply) {
-            if (reply === 1) {
-                console.log('exists');
-            } else {
-                console.log('doesn\'t exist');
-            }
-
+        this.client.exists(key, function(err, reply) {
             cb(reply);
         });
     }

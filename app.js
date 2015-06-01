@@ -20,8 +20,7 @@ var errorhandlerMiddleware = require('./middlewares/errorhandler');
 app.set('views', path.join(__dirname, 'views'));// view engine setup
 app.set('view engine', 'jade');// view engine setup
 app.use(logger('dev'));
-app.use(bodyParser.json()); // for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(bodyParser.json({limit: '10mb'})); // for parsing application/json
 app.use(multer({ dest: './uploads/'})); // for parsing multipart/form-data
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
