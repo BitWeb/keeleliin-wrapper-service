@@ -160,7 +160,10 @@ SessionService.prototype._getApiResponseItem = function( session, callback ){
 
     response.success = session.success;
     response.message = session.message;
-    response.recheckInterval = session.recheckInterval;
+
+    if(session.message == Session.messages.RUNNING){
+        response.recheckInterval = session.recheckInterval;
+    }
 
     if(session.message != Session.messages.OK){
         callback( {response: response} );

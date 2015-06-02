@@ -10,7 +10,8 @@ function Session( id ){
     this.storageType = Session.storageTypes.MEMORY;
     this.data = null;
     this.outputPath = null;
-    this.contentType = null;
+    this.contentType = 'text/plain';
+    this.recheckInterval = 1;
 }
 
 Session.messages = {

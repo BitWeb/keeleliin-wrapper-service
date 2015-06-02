@@ -26,12 +26,12 @@ config.paramEncodings = {
 };
 
 config.service = {
-    title: 'Teenuse wrapper',
-    description: 'Wrapperi kirjeldus',
+    title: 'ETANA wrapper',
+    description: 'ETANA wrapperi kirjeldus',
 
     staticOptions: {
         type: config.serviceTypes.LOCAL, //Kohaliku commandline programm
-        commandTemplate: 'grep [query] [data] [showLineNumbers]', //grep "ls" lsFile.txt -n
+        commandTemplate: '/home/priit/Documents/EKRK/vabamorf-master/apps/cmdline/project/unix/./etana analyze -propername -guess -lex /home/priit/Documents/EKRK/vabamorf-master/apps/cmdline/project/unix/test/binary/et.dct -in [data]',
         isAsync: null, //väärtustega true/false saab päringu väärtuse üle kirjutada
         storagePath: "/home/priit/wrapper"
     },
@@ -40,12 +40,10 @@ config.service = {
     serviceRequestTemplate: {
         service: {
             meta: { //key: value
-                isAsync: true, // vaikimisi on teenus asünkroone,
+                isAsync: null, // vaikimisi on teenus asünkroone,
                 sessionId: null // vaikimisi seda ei määrata
             },
-            params: { //key: value
-                showLineNumbers: 'yes',
-                query: null,
+            params: {
                 data: null
             }
         }
@@ -53,31 +51,6 @@ config.service = {
 
     //Iga parameeter peab ka siin esindatud olema
     paramsMappings: {
-        query: {
-            usageType: config.paramUsageTypes.STRING,
-            filter: function(value){ return value; },
-            required: true,
-            allowEmpty: false,
-            validator: function(value, request){ return true; },
-            encoding: null
-        },
-        showLineNumbers: {
-            usageType: config.paramUsageTypes.STRING,
-            filter: function(value){
-                var mapping = {
-                    yes: '-n',
-                    no: null
-                };
-                if(mapping[value]){
-                    return mapping[value];
-                }
-                return null;
-            },
-            required: false,
-            allowEmpty: true,
-            validator: function(value, request){ return true; },
-            encoding: null
-        },
         data: {
             usageType: config.paramUsageTypes.FILE,
             filter: function(value){ return value; },

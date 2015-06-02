@@ -59,7 +59,7 @@ LocalExecutor.prototype.runSync = function( session, process, callback ) {
     process.on('close', function (code, signal) {
         console.log('child process terminated due to receipt of signal: '+signal +' code: ' + code);
 
-        if(code == 1){
+        if(session.message != Session.messages.ERROR){
             session.message = Session.messages.OK;
         }
 
@@ -88,7 +88,7 @@ LocalExecutor.prototype.runAsync = function( session, process, callback ) {
 
     process.on('close', function (code, signal) {
         console.log('child process terminated due to receipt of signal: '+signal +' code: ' + code);
-        if(code == 1){
+        if(session.message != Session.messages.ERROR){
             session.message = Session.messages.OK;
         }
 
