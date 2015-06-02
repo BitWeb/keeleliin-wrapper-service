@@ -44,7 +44,7 @@ config.service = {
                 sessionId: null // vaikimisi seda ei määrata
             },
             params: { //key: value
-                showLineNumbers: 'yes',
+                showLineNumbers: null,
                 query: null,
                 data: null
             }

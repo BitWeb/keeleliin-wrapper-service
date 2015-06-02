@@ -33,7 +33,7 @@ LocalExecutor.prototype.executeLocalCommand = function( localServiceCommand, ses
     var spawn = require('child_process').spawn;
     var process = spawn(localServiceCommand.command, localServiceCommand.comandParams);
 
-    if(session.isAsync == true){
+    if(session.isAsync === true){
         this.runAsync(session, process,  callback);
     } else {
         this.runSync(session, process, callback);
@@ -59,7 +59,7 @@ LocalExecutor.prototype.runSync = function( session, process, callback ) {
     process.on('close', function (code, signal) {
         console.log('child process terminated due to receipt of signal: '+signal +' code: ' + code);
 
-        if(code == 0){
+        if(code == 1){
             session.message = Session.messages.OK;
         }
 
@@ -88,7 +88,7 @@ LocalExecutor.prototype.runAsync = function( session, process, callback ) {
 
     process.on('close', function (code, signal) {
         console.log('child process terminated due to receipt of signal: '+signal +' code: ' + code);
-        if(code == 0){
+        if(code == 1){
             session.message = Session.messages.OK;
         }
 
