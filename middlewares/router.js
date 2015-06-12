@@ -1,12 +1,7 @@
-/**
- * Created by priit on 27.05.15.
- */
-
-//var config = require(__base + 'config');
-
+var logger = require('log4js').getLogger('router_middleware');
 module.exports = {
     routeLogger: function(req, res, next){
-        console.log('Something is happening in: ' + req.url);
+        logger.debug('Something is happening in: ' + req.url);
         next();
      }
 };

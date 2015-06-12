@@ -13,7 +13,7 @@ config.redis = {
 
 /* kasutatavad teenuste tüübid */
 config.serviceTypes = {
-    LOCAL: 'LOCAL' //Kohalik commandline programm
+    LOCAL: 'LOCAL'
 };
 
 config.paramUsageTypes = {
@@ -26,67 +26,50 @@ config.paramEncodings = {
 };
 
 config.service = {
-    title: 'Teenuse wrapper',
+    title: 'Wrapper',
     description: 'Wrapperi kirjeldus',
-
-    staticOptions: {
-        type: config.serviceTypes.LOCAL, //Kohaliku commandline programm
-        commandTemplate: 'grep [query] [data] [showLineNumbers]', //grep "ls" lsFile.txt -n
-        isAsync: null, //väärtustega true/false saab päringu väärtuse üle kirjutada
-        storagePath: "/home/priit/wrapper"
-    },
 
     //Siia peab olema märgitud kõik võimalikud metaandmed ja parameetrid
     serviceRequestTemplate: {
         service: {
             meta: { //key: value
-                isAsync: true, // vaikimisi on teenus asünkroone,
+                isAsync: null, // vaikimisi on teenus asünkroone,
                 sessionId: null // vaikimisi seda ei määrata
             },
-            params: { //key: value
-                showLineNumbers: 'yes',
-                query: null,
-                data: null
-            }
+            params: {
+                //data: null
+            },
+            pipecontent: null
         }
     },
 
     //Iga parameeter peab ka siin esindatud olema
     paramsMappings: {
-        query: {
-            usageType: config.paramUsageTypes.STRING,
-            filter: function(value){ return value; },
-            required: true,
-            allowEmpty: false,
-            validator: function(value, request){ return true; },
-            encoding: null
-        },
-        showLineNumbers: {
-            usageType: config.paramUsageTypes.STRING,
-            filter: function(value){
-                var mapping = {
-                    yes: '-n',
-                    no: null
-                };
-                if(mapping[value]){
-                    return mapping[value];
-                }
-                return null;
-            },
-            required: false,
-            allowEmpty: true,
-            validator: function(value, request){ return true; },
-            encoding: null
-        },
-        data: {
-            usageType: config.paramUsageTypes.FILE,
-            filter: function(value){ return value; },
-            required: true,
-            allowEmpty: false,
-            validator: function(value, request){ return true; },
-            encoding: config.paramEncodings.BASE64
+        /*data: {
+         usageType: config.paramUsageTypes.FILE,
+         filter: function(value){ return value; },
+         required: true,
+         allowEmpty: false,
+         validator: function(value, request){ return true; }
+         }*/
+    },
+
+    pipecontentMapping: {
+        validator: function(value, request){
+            if(!value || !value.content){
+                request.setMessage('pipecontent', 'Puuduvad lähteandmed');
+            }
+            return true;
         }
+    },
+
+    staticOptions: {
+        type: config.serviceTypes.LOCAL, //Kohaliku commandline programm
+        commandTemplate: 'python /home/priit/Programs/KEELELIIN/pyutil/tokenizer.py -i [data] -o [outputPath]',
+        isAsync: null, //väärtustega true/false saab päringu väärtuse üle kirjutada
+        storagePath: "/home/priit/wrapper"
     }
+
 };
 
 module.exports = config;

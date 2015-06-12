@@ -7,11 +7,10 @@ function Session( id ){
     this.id = id;
     this.success = false;
     this.message = Session.messages.NOT_FOUND;
-    this.storageType = Session.storageTypes.MEMORY;
+    this.recheckInterval = 1;
+
     this.data = null;
     this.outputPath = null;
-    this.contentType = 'text/plain';
-    this.recheckInterval = 1;
 }
 
 Session.messages = {
@@ -19,11 +18,6 @@ Session.messages = {
     OK: 'OK',
     ERROR: 'ERROR',
     NOT_FOUND: "NOT_FOUND"
-};
-
-Session.storageTypes = {
-    MEMORY: 'MEMORY',
-    FILE: 'FILE'
 };
 
 module.exports = Session;

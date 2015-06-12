@@ -1,191 +1,197 @@
-/**
- * Created by priit on 29.05.15.
- *
- * STATIC class
- */
-
+var logger = require('log4js').getLogger('session_service');
 var randomstring = require('randomstring');
 var config = require('../../config');
 var fs = require('fs');
 var daoService = require('./daoService');
 var Session = require('../model/session');
 
-function SessionService(){}
+function SessionService() {
 
-SessionService.prototype.generateId = function () {
-    return randomstring.generate(40);
-};
+    var self = this;
 
-SessionService.prototype.getSession = function (sessionId, callback) {
+    this.generateId = function () {
+        return randomstring.generate(40);
+    };
 
-    daoService.get(sessionId, function(session){
-        if(session == null){
-            session = new Session( sessionId );
-        }
-        callback(session);
-    });
-};
+    this.getSession = function (sessionId, callback) {
 
-SessionService.prototype.getStorePath = function (sessionId) {
-    return config.service.staticOptions.storagePath + '/' + sessionId;
-};
-
-SessionService.prototype.storeToFile = function (sessionId, value, callback) {
-
-    var sessionPath =  this.getStorePath(sessionId);
-
-    var writeFile = function(){
-        var name = randomstring.generate(10);
-        var filePath = sessionPath +'/'+ name;
-        fs.writeFile( filePath, value, function (err) {
-            if (err){
-                console.log(err);
-                throw new Error('File write failed');
+        daoService.get(sessionId, function (session) {
+            if (session == null) {
+                session = new Session(sessionId);
             }
-            console.log('File is written');
-            callback( filePath );
+            callback(null, session);
         });
     };
 
-    this.checkSessionDir(sessionId, writeFile);
-};
+    this.getStorePath = function (sessionId) {
+        return config.service.staticOptions.storagePath + '/' + sessionId;
+    };
 
-SessionService.prototype.getSessionOutputPath = function (session) {
+    this.storeToFile = function (sessionId, value, callback) {
 
-    if(session.outputPath == null) {
-        session.outputPath = this.getStorePath(session.id) + '/' + randomstring.generate(10);
-    }
-    return session.outputPath;
-};
+        var sessionPath = self.getStorePath(sessionId);
 
-SessionService.prototype.checkSessionDir = function(sessionId, callback){
-
-    var storePath = this.getStorePath(sessionId);
-
-    fs.exists(storePath, function(exists) {
-        if (exists) {
-            callback();
-        } else {
-            fs.mkdir(storePath, function (err) {
-                if (err){
-                    console.log(err);
-                    throw new Error('Dir creation failed failed');
+        var writeFile = function () {
+            var name = randomstring.generate(10);
+            var filePath = sessionPath + '/' + name;
+            fs.writeFile(filePath, value, function (err) {
+                if (err) {
+                    logger.error(err);
+                    throw new Error('File write failed');
                 }
+                logger.debug('File is written');
+                callback(null, filePath);
+            });
+        };
+
+        self.checkSessionDir(sessionId, writeFile);
+    };
+
+    this.closeSession = function (session, output, callback) {
+
+        session.isFinished = true;
+
+        self.storeToFile(session.id, JSON.stringify( output ), function (err, path) {
+            session.outputPath = path;
+            self.saveSession(session, callback);
+        });
+    };
+
+    this.getNewSessionFilePath = function (session) {
+        return self.getStorePath(session.id) + '/' + randomstring.generate(10);
+    };
+
+    this.checkSessionDir = function (sessionId, callback) {
+
+        var storePath = self.getStorePath(sessionId);
+
+        fs.exists(storePath, function (exists) {
+            if (exists) {
+                callback();
+            } else {
+                fs.mkdir(storePath, function (err) {
+                    if (err) {
+                        logger.error(err);
+                        throw new Error('Dir creation failed failed');
+                    }
+                    callback();
+                });
+            }
+        });
+    };
+
+    this.removeSession = function (sessionId, callback) {
+
+        self._removeStorage(self.getStorePath(sessionId), function () {
+            console.log('Session file storage removed');
+            daoService.delete(sessionId, function () {
+                logger.debug('Session redis storage removed');
                 callback();
             });
-        }
-    });
-};
+        })
+    };
 
-SessionService.prototype.removeSession = function(sessionId, callback){
+    this._removeStorage = function (path, callback) {
 
-    this._removeStorage( this.getStorePath(sessionId), function(){
-        console.log('Session file storage removed');
-        daoService.delete(sessionId, function(){
-            console.log('Session redis storage removed');
-            callback();
-        });
-    })
-};
+        var rmdirAsync = function (path, callback) {
+            fs.readdir(path, function (err, files) {
+                if (err) {
+                    // Pass the error on to callback
+                    callback(err, []);
+                    return;
+                }
+                var wait = files.length,
+                    count = 0,
+                    folderDone = function (err) {
+                        count++;
+                        // If we cleaned out all the files, continue
+                        if (count >= wait || err) {
+                            fs.rmdir(path, callback);
+                        }
+                    };
+                // Empty directory to bail early
+                if (!wait) {
+                    folderDone();
+                    return;
+                }
 
-SessionService.prototype._removeStorage = function(path, callback) {
-
-    var rmdirAsync = function (path, callback) {
-        fs.readdir(path, function(err, files) {
-            if(err) {
-                // Pass the error on to callback
-                callback(err, []);
-                return;
-            }
-            var wait = files.length,
-                count = 0,
-                folderDone = function(err) {
-                    count++;
-                    // If we cleaned out all the files, continue
-                    if( count >= wait || err) {
-                        fs.rmdir(path,callback);
-                    }
-                };
-            // Empty directory to bail early
-            if(!wait) {
-                folderDone();
-                return;
-            }
-
-            // Remove one or more trailing slash to keep from doubling up
-            path = path.replace(/\/+$/,"");
-            files.forEach(function(file) {
-                var curPath = path + "/" + file;
-                fs.lstat(curPath, function(err, stats) {
-                    if( err ) {
-                        callback(err, []);
-                        return;
-                    }
-                    if( stats.isDirectory() ) {
-                        rmdirAsync(curPath, folderDone);
-                    } else {
-                        fs.unlink(curPath, folderDone);
-                    }
+                // Remove one or more trailing slash to keep from doubling up
+                path = path.replace(/\/+$/, "");
+                files.forEach(function (file) {
+                    var curPath = path + "/" + file;
+                    fs.lstat(curPath, function (err, stats) {
+                        if (err) {
+                            callback(err, []);
+                            return;
+                        }
+                        if (stats.isDirectory()) {
+                            rmdirAsync(curPath, folderDone);
+                        } else {
+                            fs.unlink(curPath, folderDone);
+                        }
+                    });
                 });
             });
+        };
+
+        rmdirAsync(path, callback);
+    };
+
+    this.saveSession = function (session, callback) {
+        daoService.set(session.id, session, callback);
+    };
+
+    this.getApiResponse = function (session, callback) {
+
+        self._getApiResponseItem(session, function (err, dataItem) {
+            if (session.message == Session.messages.OK || session.message == Session.messages.ERROR) {
+                self.removeSession(session.id, function () {
+                    logger.debug('Session and its contents are removed!');
+                });
+            }
+            callback(null, dataItem);
         });
     };
 
-    rmdirAsync(path, callback);
-};
+    this._getApiResponseItem = function (session, callback) {
 
-SessionService.prototype.saveSession = function (session, callback) {
-    daoService.set(session.id, session, callback);
-};
+        var response = {};
 
-SessionService.prototype.getApiResponse = function( session, callback ){
-    var self = this;
-    this._getApiResponseItem(session, function (dataItem) {
-        if(session.message == Session.messages.OK || session.message == Session.messages.ERROR){
-            self.removeSession(session.id, function(){
-                console.log('Session and its contents are removed!');
-            });
+        if (session.id) {
+            response.serviceId = session.id;
         }
-        callback(dataItem);
-    });
-};
 
-SessionService.prototype._getApiResponseItem = function( session, callback ){
+        response.success = session.success;
+        response.message = session.message;
 
-    var response = {};
+        if (session.message == Session.messages.RUNNING) {
+            response.recheckInterval = session.recheckInterval;
+        }
 
-    if(session.id){
-        response.serviceId = session.id;
-    }
+        if (session.message != Session.messages.OK) {
+            callback(null, {response: response});
+            return;
+        }
 
-    response.success = session.success;
-    response.message = session.message;
-
-    if(session.message == Session.messages.RUNNING){
-        response.recheckInterval = session.recheckInterval;
-    }
-
-    if(session.message != Session.messages.OK){
-        callback( {response: response} );
-        return;
-    }
-
-    response.contentType = session.contentType;
-
-    if( session.outputPath ){
-        fs.readFile(session.outputPath, 'utf8', function (err, data) {
-            if(err){
-                response.data = new Buffer(err).toString('base64');
-            } else {
-                response.data = new Buffer(data).toString('base64');
-            }
-            callback( {response: response} );
-        });
-    } else {
-        response.data = new Buffer(session.data).toString('base64');
         response.contentType = session.contentType;
-        callback( {response: response} );
-    }
-};
+
+        if (session.outputPath) {
+            fs.readFile(session.outputPath, 'utf8', function (err, data) {
+                // new Buffer(err).toString('base64')
+
+                if (err) {
+                    response.pipecontent = err;
+                } else {
+                    response.pipecontent = JSON.parse(data);
+                }
+                callback(null, {response: response});
+            });
+        } else {
+            response.data = new Buffer(session.data).toString('base64');
+            response.contentType = session.contentType;
+            callback(null, {response: response});
+        }
+    };
+}
 
 module.exports = new SessionService();

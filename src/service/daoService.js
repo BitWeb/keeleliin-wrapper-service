@@ -1,13 +1,6 @@
-/**
- * Created by priit on 28.05.15.
- *
- * Store and retrive objects
- *
- * Singelton
- */
-
+var logger = require('log4js').getLogger('dao_service');
 var redis = require('redis');
-redis.debug_mode = true;
+//redis.debug_mode = true;
 
 var config = require(__base + 'config');
 
@@ -18,23 +11,24 @@ var DaoService = function(){
     this.client = redis.createClient(config.redis.port, config.redis.host, {});
 
     this.client.on('connect', function() {
-        console.log('connected');
+        logger.info('connected');
         self.connected = true;
     });
 
     this.client.on("error", function (err) {
-        console.log("Redis Error " + err);
+        logger.error("Redis Error " + err);
     });
 
     this.set =  function(key, value, cb){
 
         this.client.hmset(key, value, function (err, reply) {
-            console.log(key + ' is set');
-            console.log(err);
-            console.log(reply);
+            if(err){
+                logger.error(err);
+                return cb(err);
+            }
 
             if(cb != undefined){
-                cb();
+                return cb();
             }
         });
     };
@@ -42,10 +36,14 @@ var DaoService = function(){
     this.get = function(key, cb){
 
         this.client.hgetall(key, function(err, reply) {
-            console.log('Got redis data');
-            console.log(reply);
+            if(err){
+                logger.error(err);
+                return cb(err);
+            }
+            logger.debug('Got redis data');
+            logger.debug(reply);
             if(cb != undefined){
-                cb(reply);
+                return cb(reply);
             }
         });
     };
@@ -53,8 +51,12 @@ var DaoService = function(){
     this.delete = function(key, cb){
 
         this.client.del(key, function(err, reply) {
+            if(err){
+                logger.error(err);
+            }
+
             if(cb != undefined){
-                cb();
+                return cb();
             }
         });
     };
@@ -62,7 +64,11 @@ var DaoService = function(){
     this.exists = function(key, cb){
 
         this.client.exists(key, function(err, reply) {
-            cb(reply);
+            if(err){
+                logger.error(err);
+                return cb(err);
+            }
+            return cb(null, reply);
         });
     }
 };

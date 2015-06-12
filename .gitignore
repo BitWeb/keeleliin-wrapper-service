@@ -1,6 +1,7 @@
 # Created by .gitignore support plugin (hsz.mobi)
 keeleliin-wrapper-service.iml
-test.txt
 config.js
 node_modules
 .idea
+dump.rdb
+scan

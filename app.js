@@ -3,39 +3,37 @@ global.__base = __dirname + '/';
 var express = require('express');
 var app = express();
 
-
+var log4js = require('log4js');
 var path = require('path');
 var logger = require('morgan');
-var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 var debug = require('debug')('keeleliin-wrapper:server');
 var http = require('http');
 var config = require('./config');
 var controllers = require('./controllers');
-
 var routerMiddleware = require('./middlewares/router');
 var errorhandlerMiddleware = require('./middlewares/errorhandler');
-
 app.set('views', path.join(__dirname, 'views'));// view engine setup
 app.set('view engine', 'jade');// view engine setup
+log4js.configure({
+  appenders: [
+    { type: 'console' },
+    { type: 'file', filename: 'keeleliin.log' }
+  ]
+});
 app.use(logger('dev'));
-app.use(bodyParser.json({limit: '10mb'})); // for parsing application/json
+app.use(bodyParser.json({limit: '1000mb'})); // for parsing application/json
 app.use(multer({ dest: './uploads/'})); // for parsing multipart/form-data
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cookieParser());
-
 app.use(routerMiddleware.routeLogger);
 app.use(errorhandlerMiddleware.common);
-
 app.use(controllers);
-
 app.use(errorhandlerMiddleware.error404);
 
 /**
  * Create HTTP server.
  */
-
 var port = normalizePort(config.port);
 app.set('port', port);
 var server = http.createServer(app);
