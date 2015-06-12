@@ -173,8 +173,6 @@ function SessionService() {
             return;
         }
 
-        response.contentType = session.contentType;
-
         if (session.outputPath) {
             fs.readFile(session.outputPath, 'utf8', function (err, data) {
                 // new Buffer(err).toString('base64')
@@ -187,8 +185,7 @@ function SessionService() {
                 callback(null, {response: response});
             });
         } else {
-            response.data = new Buffer(session.data).toString('base64');
-            response.contentType = session.contentType;
+            response.pipecontent = session.data;
             callback(null, {response: response});
         }
     };
