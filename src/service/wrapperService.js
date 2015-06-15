@@ -1,6 +1,5 @@
 var logger = require('log4js').getLogger('wrapper_service');
 var config = require('../../config');
-var Processor = require(__base + '/wrapper');
 var sessionService = require('./sessionService');
 var Session = require('../model/session');
 
@@ -15,7 +14,9 @@ function WrapperService() {
                 self.getServiceResponse(session.id, callback);
             }
 
+            var Processor = require(__base + '/wrapper/' + config.service.staticOptions.wrapper);
             var processor = new Processor();
+
             processor.process(serviceRequest, session, function ( error ) {
 
                 if (session.isAsync == false) {

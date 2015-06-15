@@ -6,7 +6,7 @@ var Session = require('../src/model/session');
 var CommandModel = require('../src/mapper/commandModel');
 var fs = require('fs');
 
-function Processor(){
+function ContentTokenizer(){
 
     var self = this;
 
@@ -15,6 +15,9 @@ function Processor(){
         var pipeContent = requestBody.service.pipecontent;
 
         var sourceText = new Buffer(pipeContent.content, 'base64').toString();
+
+        console.log(sourceText);
+
 
         self.getCommandModel(session, sourceText, function (err, model) {
 
@@ -28,7 +31,7 @@ function Processor(){
                     var tokens = [];
                     for(i in outputStrings){
                         var string = outputStrings[i];
-                        var start = sourceText.search(string);
+                        var start = sourceText.indexOf(string);
                         var token = {
                             idx: i,
                             position: {
@@ -65,4 +68,4 @@ function Processor(){
     }
 }
 
-module.exports = Processor;
+module.exports = ContentTokenizer;
