@@ -11,18 +11,17 @@ config.redis = {
     port: 6379
 };
 
-/* kasutatavad teenuste tüübid */
 config.serviceTypes = {
     LOCAL: 'LOCAL'
 };
 
-config.paramUsageTypes = {
-    STRING : 'string',
-    FILE : 'file' //parameeteri väärtus salvestatakse faili ja faili pathi kasutatakse argumendina
+config.availableWappers = {
+    CONTENT_TOKENIZER : 'contentTokenizer'
 };
 
-config.paramEncodings = {
-    BASE64 : 'base64'
+config.paramUsageTypes = {
+    STRING : 'string', //parameeter  asendatakse väärtusega
+    FILE : 'file' //parameeteri väärtus salvestatakse faili ja faili pathi kasutatakse argumendina
 };
 
 config.service = {
@@ -37,7 +36,8 @@ config.service = {
                 sessionId: null // vaikimisi seda ei määrata
             },
             params: {
-                //data: null
+                //data: null,
+                //showLineNumbers: null
             },
             pipecontent: null
         }
@@ -51,7 +51,20 @@ config.service = {
          required: true,
          allowEmpty: false,
          validator: function(value, request){ return true; }
+         },*/
+        /*showLineNumbers: {
+         usageType: config.paramUsageTypes.STRING,
+         filter: function(value){
+         if(value == 'yes'){
+         return '-o';
+         }
+         return null;
+         },
+         required: true,
+         allowEmpty: false,
+         validator: function(value, request){ return true; }
          }*/
+
     },
 
     pipecontentMapping: {
@@ -64,6 +77,7 @@ config.service = {
     },
 
     staticOptions: {
+        wrapper: config.availableWappers.CONTENT_TOKENIZER,
         type: config.serviceTypes.LOCAL, //Kohaliku commandline programm
         commandTemplate: 'python /home/priit/Programs/KEELELIIN/pyutil/tokenizer.py -i [data] -o [outputPath]',
         isAsync: null, //väärtustega true/false saab päringu väärtuse üle kirjutada
