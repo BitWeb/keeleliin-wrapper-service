@@ -29,14 +29,25 @@ function ContentTokenizer(){
                     var wrapperOutput = output.toString();
                     var outputStrings = wrapperOutput.split("\n");
                     var tokens = [];
+
+                    var globalStart = 0;
+
                     for(i in outputStrings){
                         var string = outputStrings[i];
                         var start = sourceText.indexOf(string);
+                        var stringStart = globalStart + start;
+                        var stringLength = string.length;
+
+                        sourceText = sourceText.slice(start + stringLength);
+                        //eemaldan lähteteksti alguse, et korduvad sõnad ei jääks sama asukohaga
+                        globalStart = globalStart + start + stringLength;
+
                         var token = {
                             idx: i,
+                            value: string,
                             position: {
-                                start: start,
-                                end: start + string.length
+                                start: stringStart,
+                                end: stringStart + stringLength
                             }
                         };
                         tokens.push(token);
