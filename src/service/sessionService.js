@@ -138,7 +138,9 @@ function SessionService() {
     };
 
     this.saveSession = function (session, callback) {
-        daoService.set(session.id, session, callback);
+        daoService.set(session.id, session, function (err) {
+            callback(err, session);
+        });
     };
 
     this.getApiResponse = function (session, callback) {

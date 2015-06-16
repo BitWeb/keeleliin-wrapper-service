@@ -17,14 +17,18 @@ function WrapperService() {
             var Processor = require(__base + '/wrapper/' + config.service.staticOptions.wrapper);
             var processor = new Processor();
 
-            processor.process(serviceRequest, session, function ( error ) {
+            processor.process(serviceRequest, session, function ( error, session, finalPipecontent ) {
 
-                if (session.isAsync == false) {
-                    if (error) return callback(error);
-                    self.getServiceResponse(session.id, callback);
-                }
+                sessionService.closeSession(session, finalPipecontent, function (err, session) {
+                    logger.debug('Sessioon on lõpetanud ja savestatud');
+
+                    if (session.isAsync == false) {
+                        if (error) return callback(error);
+                        self.getServiceResponse(session.id, callback);
+                    }
+
+                });
             });
-
         });
     };
 

@@ -5,7 +5,6 @@ var ServiceRequest = require(__base + '/src/model/serviceRequest');
 var WrapperService = require(__base + '/src/service/wrapperService');
 
 router.post('/', function ( req, res ) {
-    logger.debug('post in');
 
     var serviceRequest = new ServiceRequest( req.body );
 
@@ -21,7 +20,6 @@ router.post('/', function ( req, res ) {
 });
 
 router.get('/:instanceId', function(req, res) {
-    logger.debug('get in');
 
     var wrapperService = new WrapperService();
     wrapperService.getServiceResponse(req.params.instanceId, function (err, data) {
