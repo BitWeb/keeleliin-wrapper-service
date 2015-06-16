@@ -18,12 +18,22 @@ var routerMiddleware = require('./middlewares/router');
 var errorhandlerMiddleware = require('./middlewares/errorhandler');
 app.set('views', path.join(__dirname, 'views'));// view engine setup
 app.set('view engine', 'jade');// view engine setup
+
 log4js.configure({
   appenders: [
-    { type: 'console' },
+    { type: 'console',
+      layout: {
+      type: 'pattern',
+        pattern: "[%d] [%[%x{pid}] [%5.5p%]] - %m",
+        tokens: {
+          pid: process.pid
+        }
+      }
+    },
     { type: 'file', filename: 'keeleliin.log' }
   ]
 });
+
 var log4jsLogger = log4js.getLogger('app_js');
 
 app.use(logger('dev'));
@@ -39,19 +49,20 @@ app.use(errorhandlerMiddleware.error404);
  * Create HTTP server.
  */
 var numCPUs = require('os').cpus().length;
-log4jsLogger.debug('NumCPUs: ' + numCPUs);
+numCPUs = 1; //todo delete
+
 ///
 if (cluster.isMaster) {
+  log4jsLogger.debug('NumCPUs: ' + numCPUs);
+
   for (var i = 0; i < numCPUs; i++) {
     cluster.fork();
   }
 
   cluster.on('exit', function(worker, code, signal) {
-    log4jsLogger.info('worker ' + worker.process.pid + ' died; Code' + code + '; Signal: ' + signal);
+    log4jsLogger.info('worker ' + worker.process.pid + ' died; Code: ' + code + '; Signal: ' + signal);
   });
 } else {
-  // Workers can share any TCP connection
-  // In this case its a HTTP server
   var port = normalizePort(config.port);
   app.set('port', port);
   var server = http.createServer(app);
@@ -107,7 +118,7 @@ function onError(error) {
 function onListening() {
   var addr = server.address();
   var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-  log4jsLogger.debug('Listening on ' + bind);
+  log4jsLogger.debug('Listening on ' + bind + ' process: ' + process.pid );
 }
 
 module.exports = app;

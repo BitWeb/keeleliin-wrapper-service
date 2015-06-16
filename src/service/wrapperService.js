@@ -9,6 +9,7 @@ function WrapperService() {
     this.execute = function(serviceRequest, callback) {
 
         self._initSession(serviceRequest, function (err, session) {
+            if(err) return callback(err);
 
             if (session.isAsync == true) {
                 self.getServiceResponse(session.id, callback);
@@ -17,13 +18,16 @@ function WrapperService() {
             var Processor = require(__base + '/wrapper/' + config.service.staticOptions.wrapper);
             var processor = new Processor();
 
-            processor.process(serviceRequest, session, function ( error, session, finalPipecontent ) {
+            processor.process(serviceRequest, session, function ( err, session, finalPipecontent ) {
+                if(err) return callback(err);
 
                 sessionService.closeSession(session, finalPipecontent, function (err, session) {
+
+
                     logger.debug('Sessioon on lõpetanud ja savestatud');
 
                     if (session.isAsync == false) {
-                        if (error) return callback(error);
+                        if(err) return callback(err);
                         self.getServiceResponse(session.id, callback);
                     }
 
@@ -35,11 +39,14 @@ function WrapperService() {
     this._initSession = function(serviceRequest, callback){
 
         sessionService.getSession( serviceRequest.service.meta.sessionId, function(err, session){
+            if(err) return callback(err);
+
             session.message = Session.messages.RUNNING;
             session.success = true;
             session.isAsync = serviceRequest.service.meta.isAsync;
             session.isFinished = false;
-            sessionService.saveSession(session, function(){
+            sessionService.saveSession(session, function(err){
+                if(err) return callback(err);
                 return callback(null, session);
             });
         });
@@ -47,6 +54,7 @@ function WrapperService() {
 
     this.getServiceResponse = function (instanceId, callback) {
         sessionService.getSession(instanceId, function (err, session) {
+            if(err) return callback(err);
             sessionService.getApiResponse(session, callback);
         });
     };

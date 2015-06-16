@@ -15,6 +15,7 @@ router.post('/', function ( req, res ) {
 
     var wrapperService = new WrapperService();
     wrapperService.execute( serviceRequest.getData() , function (err, data) {
+        if(err) return res.send({errors: err});
         res.send(data);
     });
 });
@@ -23,6 +24,7 @@ router.get('/:instanceId', function(req, res) {
 
     var wrapperService = new WrapperService();
     wrapperService.getServiceResponse(req.params.instanceId, function (err, data) {
+        if(err) return res.send({errors: err});
         res.send(data);
     });
 });

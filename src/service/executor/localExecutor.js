@@ -20,10 +20,10 @@ function LocalExecutor() {
 
         var localCommand = new LocalCommand(commandModel);
         localCommand.generateLocalCommand();
-        self.executeLocalCommand(localCommand, response, callback);
+        self._executeLocalCommand(localCommand, response, callback);
     };
 
-    this.executeLocalCommand = function (localCommand, response, callback) {
+    this._executeLocalCommand = function (localCommand, response, callback) {
 
         var spawn = require('child_process').spawn;
         var command = localCommand.command;
@@ -34,10 +34,10 @@ function LocalExecutor() {
         logger.debug(response);
 
         var process = spawn(command, commandParams);
-        self.run(response, process, callback);
+        self._run(response, process, callback);
     };
 
-    this.run = function (response, process, callback) {
+    this._run = function (response, process, callback) {
 
         var outputStream = fs.createWriteStream(response.stdOutPath, {flags: 'a'});
         process.stdout.pipe(outputStream);

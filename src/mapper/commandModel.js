@@ -42,6 +42,8 @@ function CommandModel(){
     this._storeToFile = function (index, callback) {
         var fileValue = fileValues[index];
         sessionService.storeToFile(self.session.id, fileValue['value'], function (err, path) {
+            if(err) return callback(err);
+
             self.keyValues[fileValue['key']] = path;
             index = index + 1;
 

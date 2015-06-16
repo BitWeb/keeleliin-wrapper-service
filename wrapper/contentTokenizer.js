@@ -15,12 +15,15 @@ function ContentTokenizer(){
         var sourceText = new Buffer(pipeContent.content, 'base64').toString();
 
         self.getCommandModel(session, sourceText, function (err, model) {
-
-            executorService.execute( model, function ( error, response ) {
+            if(err) return callback(err);
+            executorService.execute( model, function ( err, response ) {
+                if(err) return callback(err);
                 /*  response = { isSuccess: BOOLEAN, stdOutPath: STRING, outputPaths:  { key: value, ...} } */
                 logger.debug('Väline programm on lõpetanud');
 
                 fs.readFile(response.outputPaths.outputPath, function (err, output) {
+                    if(err) return callback(err);
+
                     var wrapperOutput = output.toString();
                     var outputStrings = wrapperOutput.split("\n");
                     var tokens = [];

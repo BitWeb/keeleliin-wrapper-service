@@ -43,7 +43,7 @@ var DaoService = function(){
             logger.debug('Got redis data');
             logger.debug(reply);
             if(cb != undefined){
-                return cb(reply);
+                return cb(null, reply);
             }
         });
     };

@@ -15,7 +15,9 @@ function SessionService() {
 
     this.getSession = function (sessionId, callback) {
 
-        daoService.get(sessionId, function (session) {
+        daoService.get(sessionId, function (err, session) {
+            if(err) return callback(err);
+
             if (session == null) {
                 session = new Session(sessionId);
             }
@@ -52,6 +54,7 @@ function SessionService() {
         session.isFinished = true;
 
         self.storeToFile(session.id, JSON.stringify( output ), function (err, path) {
+            if(err) return callback(err);
             session.outputPath = path;
             self.saveSession(session, callback);
         });
@@ -83,10 +86,10 @@ function SessionService() {
     this.removeSession = function (sessionId, callback) {
 
         self._removeStorage(self.getStorePath(sessionId), function () {
-            console.log('Session file storage removed');
-            daoService.delete(sessionId, function () {
+            logger.debug('Session file storage removed');
+            daoService.delete(sessionId, function (err) {
                 logger.debug('Session redis storage removed');
-                callback();
+                callback(err);
             });
         })
     };
