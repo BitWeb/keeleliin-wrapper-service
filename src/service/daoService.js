@@ -6,13 +6,11 @@ var config = require(__base + 'config');
 
 var DaoService = function(){
     var self = this;
-    var connected = false;
 
     this.client = redis.createClient(config.redis.port, config.redis.host, {});
 
     this.client.on('connect', function() {
         logger.info('connected');
-        self.connected = true;
     });
 
     this.client.on("error", function (err) {
@@ -41,7 +39,7 @@ var DaoService = function(){
                 return cb(err);
             }
             logger.debug('Got redis data');
-            logger.debug(reply);
+
             if(cb != undefined){
                 return cb(null, reply);
             }

@@ -24,7 +24,10 @@ router.get('/:instanceId', function(req, res) {
 
     var wrapperService = new WrapperService();
     wrapperService.getServiceResponse(req.params.instanceId, function (err, data) {
-        if(err) return res.send({errors: err});
+
+        if(err){
+            return res.status(404).send({errors: err});
+        }
         res.send(data);
     });
 });

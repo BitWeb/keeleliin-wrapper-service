@@ -4,6 +4,7 @@ var config = require('../../config');
 var fs = require('fs');
 var daoService = require('./daoService');
 var Session = require('../model/session');
+var FileUtil = require('../util/file');
 
 function SessionService() {
 
@@ -17,12 +18,16 @@ function SessionService() {
 
         daoService.get(sessionId, function (err, session) {
             if(err) return callback(err);
-
-            if (session == null) {
-                session = new Session(sessionId);
+            if(session == null){
+                return callback({session: 'Sessiooni ei leitud'});
             }
             callback(null, session);
         });
+    };
+
+    this.createSession = function () {
+        var sessionId = self.generateId();
+        return new Session(sessionId);
     };
 
     this.getStorePath = function (sessionId) {
@@ -85,59 +90,13 @@ function SessionService() {
 
     this.removeSession = function (sessionId, callback) {
 
-        self._removeStorage(self.getStorePath(sessionId), function () {
+        FileUtil.rmdir(self.getStorePath(sessionId), function () {
             logger.debug('Session file storage removed');
             daoService.delete(sessionId, function (err) {
                 logger.debug('Session redis storage removed');
                 callback(err);
             });
         })
-    };
-
-    this._removeStorage = function (path, callback) {
-
-        var rmdirAsync = function (path, callback) {
-            fs.readdir(path, function (err, files) {
-                if (err) {
-                    // Pass the error on to callback
-                    callback(err, []);
-                    return;
-                }
-                var wait = files.length,
-                    count = 0,
-                    folderDone = function (err) {
-                        count++;
-                        // If we cleaned out all the files, continue
-                        if (count >= wait || err) {
-                            fs.rmdir(path, callback);
-                        }
-                    };
-                // Empty directory to bail early
-                if (!wait) {
-                    folderDone();
-                    return;
-                }
-
-                // Remove one or more trailing slash to keep from doubling up
-                path = path.replace(/\/+$/, "");
-                files.forEach(function (file) {
-                    var curPath = path + "/" + file;
-                    fs.lstat(curPath, function (err, stats) {
-                        if (err) {
-                            callback(err, []);
-                            return;
-                        }
-                        if (stats.isDirectory()) {
-                            rmdirAsync(curPath, folderDone);
-                        } else {
-                            fs.unlink(curPath, folderDone);
-                        }
-                    });
-                });
-            });
-        };
-
-        rmdirAsync(path, callback);
     };
 
     this.saveSession = function (session, callback) {

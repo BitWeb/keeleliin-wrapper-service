@@ -22,15 +22,12 @@ function WrapperService() {
                 if(err) return callback(err);
 
                 sessionService.closeSession(session, finalPipecontent, function (err, session) {
-
-
                     logger.debug('Sessioon on lõpetanud ja savestatud');
-
                     if (session.isAsync == false) {
+                        logger.debug('Send response');
                         if(err) return callback(err);
                         self.getServiceResponse(session.id, callback);
                     }
-
                 });
             });
         });
@@ -38,23 +35,23 @@ function WrapperService() {
 
     this._initSession = function(serviceRequest, callback){
 
-        sessionService.getSession( serviceRequest.service.meta.sessionId, function(err, session){
+        var session = sessionService.createSession();
+        session.message = Session.messages.RUNNING;
+        session.success = true;
+        session.isAsync = serviceRequest.service.meta.isAsync;
+        session.isFinished = false;
+        sessionService.saveSession(session, function(err){
             if(err) return callback(err);
-
-            session.message = Session.messages.RUNNING;
-            session.success = true;
-            session.isAsync = serviceRequest.service.meta.isAsync;
-            session.isFinished = false;
-            sessionService.saveSession(session, function(err){
-                if(err) return callback(err);
-                return callback(null, session);
-            });
+            return callback(null, session);
         });
     };
 
     this.getServiceResponse = function (instanceId, callback) {
         sessionService.getSession(instanceId, function (err, session) {
-            if(err) return callback(err);
+            if(err){
+                return callback(err);
+            }
+            //logger.debug(session);
             sessionService.getApiResponse(session, callback);
         });
     };

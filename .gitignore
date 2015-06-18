@@ -5,8 +5,9 @@ node_modules
 .idea
 dump.rdb
 scan
-tests/contentTokenizer.js
-tests/jmeter.log
-tests/94megafile
-tests/189megafile
+tmp_tests/contentTokenizer.js
+tmp_tests/jmeter.log
+tmp_tests/94megafile
+tmp_tests/189megafile
 keeleliin.log
+coverage

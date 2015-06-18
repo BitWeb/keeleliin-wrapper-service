@@ -32,8 +32,7 @@ config.service = {
     serviceRequestTemplate: {
         service: {
             meta: { //key: value
-                isAsync: null, // vaikimisi on teenus asünkroone,
-                sessionId: null // vaikimisi seda ei määrata
+                isAsync: null // vaikimisi on teenus asünkroone,
             },
             params: {
                 //data: null,

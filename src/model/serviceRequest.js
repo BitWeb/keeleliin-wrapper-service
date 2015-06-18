@@ -1,6 +1,5 @@
 var logger = require('log4js').getLogger('service_request');
 var config = require('../../config');
-var sessionService = require('../service/sessionService');
 
 function ServiceRequest( requestData ) {
     var self = this;
@@ -32,10 +31,6 @@ function ServiceRequest( requestData ) {
             }
         } else {
             self.data.service.meta.isAsync = staticOptions.isAsync;
-        }
-
-        if(!self.data.service.meta.sessionId){
-            self.data.service.meta.sessionId = sessionService.generateId();
         }
     };
 
