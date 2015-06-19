@@ -18,7 +18,7 @@ describe('File util', function() {
         done();
     });
 
-    it('Faili kopeerimine', function(done) {
+    it('Faili liigutamine', function(done) {
 
         //loo fail
         fs.writeFileSync(mvSource, 'Faili sisu');
@@ -44,7 +44,7 @@ describe('File util', function() {
             should(fs.existsSync(mvSource)).not.be.ok();
             should(fs.existsSync(mvTarget)).not.be.ok();
 
-            FileUtil.mv(mvSource, mvTarget, function(){
+            FileUtil.cp(mvSource, mvTarget, function(){
                 should(fs.existsSync(mvSource)).not.be.ok();
                 should(fs.existsSync(mvTarget)).be.ok();
 
