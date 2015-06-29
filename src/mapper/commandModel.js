@@ -1,15 +1,15 @@
 var logger = require('log4js').getLogger('router_middleware');
-var config = require('../../config');
 var sessionService = require('../service/sessionService');
 
 function CommandModel(){
 
     var self = this;
     this.session = null;
+    this.serviceProperties = {};//näiteks local command template
+    this.outputPaths = {}; //väljundfailid
+    this.keyValues = {}; //teenuse parameetrid
 
     var fileValues = [];
-    this.outputPaths = {};
-    this.keyValues = {};
 
     this.init = function ( session ) {
         self.session = session;
@@ -19,13 +19,19 @@ function CommandModel(){
         self.keyValues[key] = value;
     };
 
+    /*
+    * Antud väärtus kirjutatakse faili
+    * */
     this.setFileValue = function (key, value) {
         fileValues.push(
             {key: key, value: value}
         );
     };
 
-    this.setOutputPath = function (key) {
+    /*
+    * Kasutatava programmi väljund
+    * */
+    this.addOutputPath = function (key) {
         self.outputPaths[key] = sessionService.getNewSessionFilePath( self.session );
     };
 
@@ -36,6 +42,8 @@ function CommandModel(){
         //store file values
         if(fileValues.length > 0){
             self._storeToFile(0, callback);
+        } else {
+            callback();
         }
     };
 

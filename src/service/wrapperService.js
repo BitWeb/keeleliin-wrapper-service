@@ -1,5 +1,6 @@
 var logger = require('log4js').getLogger('wrapper_service');
 var config = require('../../config');
+var Processor = require(__base + '/wrapper/' + config.service.staticParams.wrapper);
 var sessionService = require('./sessionService');
 var Session = require('../model/session');
 
@@ -8,21 +9,20 @@ function WrapperService() {
 
     this.execute = function(serviceRequest, callback) {
 
-        self._initSession(serviceRequest, function (err, session) {
+        sessionService.createSession(serviceRequest, function (err, session) {
             if(err) return callback(err);
 
             if (session.isAsync == true) {
                 self.getServiceResponse(session.id, callback);
             }
 
-            var Processor = require(__base + '/wrapper/' + config.service.staticOptions.wrapper);
             var processor = new Processor();
 
-            processor.process(serviceRequest, session, function ( err, session, finalPipecontent ) {
+            processor.process( session, function ( err, session ) {
                 if(err) return callback(err);
 
-                sessionService.closeSession(session, finalPipecontent, function (err, session) {
-                    logger.debug('Sessioon on lõpetanud ja savestatud');
+                sessionService.closeSession(session, function (err, session) {
+                    logger.debug('Sessioon on lõpetanud ja savestatud. isAsync:' + session.isAsync);
                     if (session.isAsync == false) {
                         logger.debug('Send response');
                         if(err) return callback(err);
@@ -33,28 +33,31 @@ function WrapperService() {
         });
     };
 
-    this._initSession = function(serviceRequest, callback){
-
-        var session = sessionService.createSession();
-        session.message = Session.messages.RUNNING;
-        session.success = true;
-        session.isAsync = serviceRequest.service.meta.isAsync;
-        session.isFinished = false;
-        sessionService.saveSession(session, function(err){
-            if(err) return callback(err);
-            return callback(null, session);
-        });
-    };
-
-    this.getServiceResponse = function (instanceId, callback) {
-        sessionService.getSession(instanceId, function (err, session) {
+    this.getServiceResponse = function (sessionId, callback) {
+        sessionService.getSession(sessionId, function (err, session) {
             if(err){
                 return callback(err);
             }
-            //logger.debug(session);
+            logger.debug(session);
             sessionService.getApiResponse(session, callback);
+        });
+    };
+
+    this.getServiceFile = function (sessionId, fileId, callback) {
+        sessionService.getSession(sessionId, function (err, session) {
+            if(err){
+                return callback(err);
+            }
+
+            var path = session.outputFiles[fileId];
+
+            if(!path){
+                return callback('Dokumenti ei leitud');
+            }
+
+            callback(null, path);
         });
     };
 }
 
-module.exports = WrapperService;
+module.exports = new WrapperService();

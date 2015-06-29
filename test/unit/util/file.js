@@ -10,7 +10,7 @@ var fs = require('fs');
 
 describe('File util', function() {
 
-    var tmpPath = config.service.staticOptions.tmpPath;
+    var tmpPath = config.service.staticParams.tmpPath;
     var mvSource = tmpPath + 'mvSource';
     var mvTarget = tmpPath + 'mvTarget';
 

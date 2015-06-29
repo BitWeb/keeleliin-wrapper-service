@@ -18,6 +18,7 @@ var controllers = require('./../controllers/index');
 var routerMiddleware = require('./../middlewares/router');
 var errorhandlerMiddleware = require('./../middlewares/errorhandler');
 var ServerUtil = require('./../src/util/server');
+var cleanerService = require('./../src/service/cleanerService');
 
 app.set('views', path.join(__base, 'views'));// view engine setup
 app.set('view engine', 'jade');// view engine setup
@@ -41,7 +42,7 @@ log4js.configure({
 var log4jsLogger = log4js.getLogger('app_js');
 app.use(logger('dev'));
 app.use(bodyParser.json({limit: '1000mb'})); // for parsing application/json
-app.use(multer({ dest: config.service.staticOptions.tmpPath})); // for parsing multipart/form-data
+app.use(multer({ dest: config.service.staticParams.tmpPath})); // for parsing multipart/form-data
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(routerMiddleware.routeLogger);
 app.use(errorhandlerMiddleware.common);
@@ -51,6 +52,9 @@ app.use(errorhandlerMiddleware.error404);
 /**
  * Create HTTP server.
  */
+
+
+
 function startCluster( instanceCount, cb ){
 
     if(instanceCount == null){
@@ -66,12 +70,14 @@ function startCluster( instanceCount, cb ){
         cluster.on('exit', function(worker, code, signal) {
             log4jsLogger.info('worker ' + worker.process.pid + ' died; Code: ' + code + '; Signal: ' + signal);
         });
+
+        cleanerService.init();
     } else {
         startInstance(cb)
     }
 }
 
-function startInstance(cb){
+function startInstance(cb) {
     var port = ServerUtil.normalizePort(config.port);
     app.set('port', port);
     var server = http.createServer(app);
@@ -80,11 +86,10 @@ function startInstance(cb){
     server.on('listening', function () {
         var addr = server.address();
         var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-        log4jsLogger.debug('Listening on ' + bind + ' process: ' + process.pid );
+        log4jsLogger.debug('Listening on ' + bind + ' process: ' + process.pid);
         cb();
     });
 }
-
 
 
 // *******************************************************

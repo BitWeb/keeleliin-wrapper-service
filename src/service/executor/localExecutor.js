@@ -13,13 +13,11 @@ function LocalExecutor() {
 
         var response = {
             message: null,
-            success:true,
-            stdOutPath: sessionService.getNewSessionFilePath(commandModel.session),
-            outputPaths: commandModel.outputPaths
+            isSuccess:true,
+            stdOutPath: sessionService.getNewSessionFilePath(commandModel.session)
         };
 
-        var localCommand = new LocalCommand(commandModel);
-        localCommand.generateLocalCommand();
+        var localCommand = new LocalCommand(commandModel).generate();
         self._executeLocalCommand(localCommand, response, callback);
     };
 
@@ -45,7 +43,7 @@ function LocalExecutor() {
 
         process.stderr.on('data', function (data) {
             logger.error('Got error: ' + data);
-            response.success = false;
+            response.isSuccess = false;
         });
 
         process.on('close', function (code, signal) {
@@ -54,4 +52,4 @@ function LocalExecutor() {
         });
     };
 }
-module.exports = LocalExecutor;
+module.exports = new LocalExecutor();

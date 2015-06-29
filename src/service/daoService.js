@@ -1,11 +1,11 @@
 var logger = require('log4js').getLogger('dao_service');
 var redis = require('redis');
-//redis.debug_mode = true;
-
 var config = require(__base + 'config');
 
 var DaoService = function(){
     var self = this;
+
+    var prefix = config.service.staticParams.uniqueId + ':';
 
     this.client = redis.createClient(config.redis.port, config.redis.host, {});
 
@@ -19,44 +19,32 @@ var DaoService = function(){
 
     this.set =  function(key, value, cb){
 
-        this.client.hmset(key, value, function (err, reply) {
-            if(err){
-                logger.error(err);
-                return cb(err);
-            }
-
+        this.client.set(prefix + key, JSON.stringify(value), function (err, reply) {
             if(cb != undefined){
-                return cb();
+                cb(err, reply);
             }
         });
     };
 
     this.get = function(key, cb){
 
-        this.client.hgetall(key, function(err, reply) {
-            if(err){
-                logger.error(err);
-                return cb(err);
-            }
-            logger.debug('Got redis data');
-
+        this.client.get(prefix + key, function(err, reply) {
             if(cb != undefined){
-                return cb(null, reply);
+                if(err){
+                    return cb(err);
+                }
+                return cb(null, JSON.parse(reply));
             }
         });
     };
 
     this.delete = function(key, cb){
 
-        this.client.del(key, function(err, reply) {
-            if(err){
-                logger.error(err);
-            }
-
+        this.client.del(prefix + key, function (err, reply) {
             if(cb != undefined){
-                return cb();
+                cb(err, reply);
             }
-        });
+        } );
     };
 
     this.exists = function(key, cb){

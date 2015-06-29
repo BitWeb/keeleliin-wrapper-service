@@ -1,27 +1,32 @@
 var logger = require('log4js').getLogger('wrapper');
 var config = require('./../config');
-var executorService = require('./../src/service/executorService');
+var localExecutor = require('./../src/service/executor/localExecutor');
 var Session = require('../src/model/session');
+var SessionService = require('./../src/service/sessionService');
+
 var CommandModel = require('../src/mapper/commandModel');
 var fs = require('fs');
+
+
 
 function ContentTokenizer(){
 
     var self = this;
 
-    this.process = function (requestBody, session, callback) {
+    this.process = function ( session, callback) {
+        var contentFile = session.requestFiles.content;
+        var sourceText = fs.readFileSync(contentFile).toString(); //todo: peaks olema async
 
-        var pipeContent = requestBody.service.pipecontent;
-        var sourceText = new Buffer(pipeContent.content, 'base64').toString();
-
-        self.getCommandModel(session, sourceText, function (err, model) {
+        self.getCommandModel(session, function (err, model) {
+            logger.debug('getCommandModel callback');
             if(err) return callback(err);
-            executorService.execute( model, function ( err, response ) {
+
+            localExecutor.execute( model, function ( err, response ) {
                 if(err) return callback(err);
-                /*  response = { isSuccess: BOOLEAN, stdOutPath: STRING, outputPaths:  { key: value, ...} } */
+
                 logger.debug('Väline programm on lõpetanud');
 
-                fs.readFile(response.outputPaths.outputPath, function (err, output) {
+                fs.readFile(model.outputPaths.outputPath1, function (err, output) {
                     if(err) return callback(err);
 
                     var wrapperOutput = output.toString();
@@ -43,22 +48,21 @@ function ContentTokenizer(){
 
                         var token = {
                             idx: i,
-                            location: {
-                                start: stringStart,
-                                end: globalStart
-                            }
+                            location: [stringStart, globalStart ]
                         };
                         tokens.push(token);
                     }
 
-                    requestBody.service.pipecontent.tokens = tokens;
-
-                    var finalPipecontent = requestBody.service.pipecontent;
                     session.message = Session.messages.OK;
 
-                    logger.debug('Pipecontenti mappimine on lõpetatud');
+                    var mapping = JSON.stringify(tokens);
+                    logger.debug('Failide mappimine on lõpetatud');
+                    SessionService.storeToFile(session.id, mapping, function (error, mappingPath) {
+                        session.addOutputFile('output', model.outputPaths.outputPath1);
+                        session.addOutputFile('mapping', mappingPath);
+                        return callback( error, session );
+                    });
 
-                    return callback(null, session, finalPipecontent);
                 });
 
             });
@@ -66,13 +70,14 @@ function ContentTokenizer(){
         });
     };
 
-    this.getCommandModel = function (session, sourceText, callback) {
-
+    this.getCommandModel = function (session, callback) {
         var model = new CommandModel();
+        model.serviceProperties.commandTemplate = config.availableWappers.CONTENT_TOKENIZER.commandTemplate;
         model.init( session );
-        model.setFileValue('data', sourceText);
-        model.setOutputPath('outputPath');
+        model.setTextValue('data', session.requestFiles.content);
+        model.addOutputPath('outputPath1');
         model.render(function (err) {
+            logger.debug('Render callback');
             callback(err, model);
         });
     }

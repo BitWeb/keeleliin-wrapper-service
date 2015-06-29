@@ -25,22 +25,70 @@ function SessionService() {
         });
     };
 
-    this.createSession = function () {
+    this.createSession = function (serviceRequest, cb) {
         var sessionId = self.generateId();
-        return new Session(sessionId);
+        var session = new Session(sessionId);
+        session.message = Session.messages.RUNNING;
+        session.success = true;
+        session.requestBody = serviceRequest.data;
+        session.requestFiles = {};
+        session.isAsync = serviceRequest.data.is_async;
+        session.isFinished = false;
+        self.saveSession(session, function(err){
+            if(err) return cb(err);
+            self.checkSessionDir(sessionId, function (err) {
+                if(err) return cb(err);
+                self._storeRequestFiles(session, serviceRequest.files, function (err, session) {
+                    return cb(err, session);
+                });
+            });
+        });
+    };
+
+    this._storeRequestFiles = function (session, files, cb) {
+
+        var tmpList = [];
+        for(var i in files){
+            tmpList.push(files[i]);
+        }
+
+        if(tmpList.length > 0){
+            self._storeOnIndex(session, tmpList, 0, cb)
+        }
+    };
+
+    this._storeOnIndex = function (session, tmpList, index, cb) {
+
+        var tmpFile = tmpList[index];
+        var sessionFilePath = this.getNewFilePath(session.id);
+
+        FileUtil.mv(tmpFile.path, sessionFilePath, function(err){
+           if(err) return cb(err);
+            session.requestFiles[tmpFile.fieldname] = sessionFilePath;
+
+            if(index < tmpList - 1){
+                index = index + 1;
+                self._storeOnIndex(session, tmpList, 0, cb)
+            } else {
+                cb(null, session);
+            }
+        });
     };
 
     this.getStorePath = function (sessionId) {
-        return config.service.staticOptions.storagePath + '/' + sessionId;
+        return config.service.staticParams.storagePath + '/' + sessionId;
     };
+
+    this.getNewFilePath = function (sessionId) {
+        var sessionPath = self.getStorePath(sessionId);
+        return sessionPath + '/' + randomstring.generate(10);
+    };
+
 
     this.storeToFile = function (sessionId, value, callback) {
 
-        var sessionPath = self.getStorePath(sessionId);
-
         var writeFile = function () {
-            var name = randomstring.generate(10);
-            var filePath = sessionPath + '/' + name;
+            var filePath = self.getNewFilePath(sessionId);
             fs.writeFile(filePath, value, function (err) {
                 if (err) {
                     logger.error(err);
@@ -54,15 +102,9 @@ function SessionService() {
         self.checkSessionDir(sessionId, writeFile);
     };
 
-    this.closeSession = function (session, output, callback) {
-
+    this.closeSession = function (session, callback) {
         session.isFinished = true;
-
-        self.storeToFile(session.id, JSON.stringify( output ), function (err, path) {
-            if(err) return callback(err);
-            session.outputPath = path;
-            self.saveSession(session, callback);
-        });
+        self.saveSession(session, callback);
     };
 
     this.getNewSessionFilePath = function (session) {
@@ -91,9 +133,9 @@ function SessionService() {
     this.removeSession = function (sessionId, callback) {
 
         FileUtil.rmdir(self.getStorePath(sessionId), function () {
-            logger.debug('Session file storage removed');
+            logger.debug('Session file storage removed: ' + sessionId);
             daoService.delete(sessionId, function (err) {
-                logger.debug('Session redis storage removed');
+                logger.debug('Session redis storage removed: ' + sessionId);
                 callback(err);
             });
         })
@@ -106,13 +148,7 @@ function SessionService() {
     };
 
     this.getApiResponse = function (session, callback) {
-
         self._getApiResponseItem(session, function (err, dataItem) {
-            if (session.message == Session.messages.OK || session.message == Session.messages.ERROR) {
-                self.removeSession(session.id, function () {
-                    logger.debug('Session and its contents are removed!');
-                });
-            }
             callback(null, dataItem);
         });
     };
@@ -133,25 +169,22 @@ function SessionService() {
         }
 
         if (session.message != Session.messages.OK) {
-            callback(null, {response: response});
-            return;
+            return callback(null, {response: response});
         }
 
-        if (session.outputPath) {
-            fs.readFile(session.outputPath, 'utf8', function (err, data) {
-                // new Buffer(err).toString('base64')
+        response.data = {};
 
-                if (err) {
-                    response.pipecontent = err;
-                } else {
-                    response.pipecontent = JSON.parse(data);
-                }
-                callback(null, {response: response});
-            });
-        } else {
-            response.pipecontent = session.data;
-            callback(null, {response: response});
+        if(session.data){
+            response.data = session.data;
         }
+
+        var filesList = [];
+        for(i in session.outputFiles){
+            filesList.push(i);
+        }
+        response.data.files = filesList;
+
+        return callback(null, {response: response});
     };
 }
 

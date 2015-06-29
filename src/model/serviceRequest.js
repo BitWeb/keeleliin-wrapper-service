@@ -1,76 +1,72 @@
 var logger = require('log4js').getLogger('service_request');
 var config = require('../../config');
 
-function ServiceRequest( requestData ) {
+function ServiceRequest( requestBody, requestFiles ) {
     var self = this;
 
-    this.data = requestData;
-    this.template = config.service.serviceRequestTemplate;
-    this.messages = null;
+    this.data = requestBody;
+    this.files = requestFiles;
+    var messages = null;
+
 
     this.isValid = function(){
-        self._mapMetaOptions();
         self._mapParams();
-        self._validatePipecontent();
-        return self.messages == null;
+        self._checkFiles();
+        return messages == null;
     };
 
     this.setMessage = function (key, value) {
 
-        if(self.messages == null){
-            self.messages = {}
+        if(messages == null){
+            messages = {}
         }
-        self.messages[key] = value;
-    };
-
-    this._mapMetaOptions = function () {
-        var staticOptions = config.service.staticOptions;
-        if(staticOptions.isAsync === null ){
-            if(self.data.service.meta.isAsync === null || self.data.service.meta.isAsync === undefined){
-                self.data.service.meta.isAsync = self.template.service.meta.isAsync
-            }
-        } else {
-            self.data.service.meta.isAsync = staticOptions.isAsync;
-        }
+        messages[key] = value;
     };
 
     this._mapParams = function(){
 
-        var expectedParams = this.template.service.params;
+        var staticParams = config.service.staticParams;
 
-        for(var property in expectedParams){
+        for(var property in config.service.requestBodyTemplate){
 
-            var value = self.data.service.params[property];
-            var mapping = config.service.paramsMappings[property];
+            var value = self.data[property];
+
+            var mapping = config.service.requestBodyParamsMappings[property];
+
+            if(staticParams[property] != undefined){
+                value = staticParams[property];
+            }
 
             if(mapping.filter){
                 value = mapping.filter(value);
             }
             if(mapping.required == true && value == undefined){
                 self.setMessage(property, 'Väli on nõutud');
+                continue;
             }
-            if(mapping.allowEmpty == false && (value == null || value == '') ){
+            if(mapping.allowEmpty == false && (value === null || value === '') ){
                 self.setMessage(property, 'Väli on täitmata');
+                continue;
             }
             if(mapping.validator){
                 mapping.validator(value, self);
             }
-            self.data.service.params[property] = value;
+            self.data[property] = value;
         }
     };
 
-    this._validatePipecontent = function () {
-        if(config.service.pipecontentMapping.validator){
-            config.service.pipecontentMapping.validator(self.data.service.pipecontent, self);
+    this._checkFiles = function () {
+
+        for( var fileId in config.service.requestFiles){
+            var file = this.files[fileId];
+            if(!file){
+                self.setMessage(fileId, 'Nõutud faili ei saadetud');
+            }
         }
     };
 
     this.getMessages = function(){
-        return {errors: self.messages, success: false};
-    };
-
-    this.getData = function(){
-        return self.data;
+        return {errors: messages, success: false};
     };
 }
 
