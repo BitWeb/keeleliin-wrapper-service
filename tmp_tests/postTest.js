@@ -5,7 +5,10 @@ var request = require('request');
 var fs = require('fs');
 var config = require('../config');
 
-var url = 'http://127.0.0.1:' + config.port + '/api/v1/service';
+var baseUrl = 'http://dev.bitweb.ee:3003';
+//var baseUrl = 'http://127.0.0.1:8000';
+
+var url = baseUrl + '/api/v1/service';
 
 var path = 'keeleliin.log';
 
@@ -31,7 +34,7 @@ request.post( { url: url, formData: formData }, function (err, resp, body) {
 
 
 function getData(id, file){
-    url = 'http://127.0.0.1:' + config.port + '/api/v1/service/' + id + '/' + file;
+    url = url + '/' + id + '/' + file;
 
     request.get( { url: url }, function (err, resp, body) {
         if (err) {

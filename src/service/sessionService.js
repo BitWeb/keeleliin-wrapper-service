@@ -19,7 +19,8 @@ function SessionService() {
         daoService.get(sessionId, function (err, session) {
             if(err) return callback(err);
             if(session == null){
-                return callback({session: 'Sessiooni ei leitud'});
+                logger.debug('Session not found: ' + sessionId);
+                return callback('Sessiooni ei leitud');
             }
             callback(null, session);
         });
