@@ -5,6 +5,9 @@ function LocalCommand( commandModel ) {
     var self = this;
 
     var keyValues = commandModel.keyValues;
+
+    logger.debug(keyValues);
+
     var commandTemplate = commandModel.serviceProperties.commandTemplate;
 
     this.templateParams = commandTemplate.match(/\[(.*?)]/g);
