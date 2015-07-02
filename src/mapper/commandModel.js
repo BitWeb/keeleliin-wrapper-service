@@ -33,6 +33,7 @@ function CommandModel(){
     * */
     this.addOutputPath = function (key) {
         self.outputPaths[key] = sessionService.getNewSessionFilePath( self.session );
+        logger.debug('Output path added: ' + key +'  ' + self.outputPaths[key] );
     };
 
     this.render = function ( callback ) {
