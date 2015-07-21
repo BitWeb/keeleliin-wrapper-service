@@ -2,7 +2,6 @@ var logger = require('log4js').getLogger('wrapper');
 var config = require('./../config');
 var localExecutor = require('./../src/service/executor/localExecutor');
 var Session = require('../src/model/session');
-var SessionService = require('./../src/service/sessionService');
 var CommandModel = require('../src/mapper/commandModel');
 var fs = require('fs');
 
@@ -23,8 +22,7 @@ function ContentTokenizer(){
                 if(response.isSuccess){
                     session.message = Session.messages.OK;
                 } else {
-                    session.message = Session.messages.ERROR;
-                    session.success = false;
+                    session.setErrors(response.errors);
                 }
 
                 session.addOutputFile('output', response.stdOutPath);

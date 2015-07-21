@@ -7,8 +7,6 @@ var SessionService = require('./../src/service/sessionService');
 var CommandModel = require('../src/mapper/commandModel');
 var fs = require('fs');
 
-
-
 function ContentTokenizer(){
 
     var self = this;
@@ -22,9 +20,15 @@ function ContentTokenizer(){
             if(err) return callback(err);
 
             localExecutor.execute( model, function ( err, response ) {
-                if(err) return callback(err);
 
-                logger.debug('Väline programm on lõpetanud');
+                if(err){
+                    session.setErrors(err);
+                    return callback( err, session );
+                }
+                if(!response.isSuccess){
+                    session.setErrors(response.errors);
+                    return callback( err, session );
+                }
 
                 fs.readFile(model.outputPaths.outputPath1, function (err, output) {
                     if(err) return callback(err);

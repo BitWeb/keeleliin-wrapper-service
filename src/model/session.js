@@ -12,10 +12,17 @@ var Session = function( id ){
     this.requestFiles = {};
     this.data = null;
     this.outputFiles = {};
+    this.errors = null;
 };
 
 Session.prototype.addOutputFile = function(key, path){
     this.outputFiles[key] = path;
+};
+
+Session.prototype.setErrors = function(errors, path){
+    this.errors = errors;
+    this.isSuccess = false;
+    this.message = Session.messages.ERROR
 };
 
 Session.messages = {

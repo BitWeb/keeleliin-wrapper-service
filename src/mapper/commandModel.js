@@ -1,4 +1,4 @@
-var logger = require('log4js').getLogger('router_middleware');
+var logger = require('log4js').getLogger('command_model');
 var sessionService = require('../service/sessionService');
 
 function CommandModel(){

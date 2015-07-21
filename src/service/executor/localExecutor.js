@@ -12,9 +12,9 @@ function LocalExecutor() {
     this.execute = function (commandModel, callback) {
 
         var response = {
-            message: null,
             isSuccess:true,
-            stdOutPath: sessionService.getNewSessionFilePath(commandModel.session)
+            stdOutPath: sessionService.getNewSessionFilePath(commandModel.session),
+            errors: []
         };
 
         var localCommand = new LocalCommand(commandModel).generate();
@@ -44,6 +44,13 @@ function LocalExecutor() {
         process.stderr.on('data', function (data) {
             logger.error('Got error: ' + data);
             response.isSuccess = false;
+            response.errors.push({util:data});
+        });
+
+        process.on('error', function (data) {
+            logger.error('Got error: ' + data);
+            response.isSuccess = false;
+            response.errors.push({util:data});
         });
 
         process.on('close', function (code, signal) {

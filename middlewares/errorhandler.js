@@ -1,5 +1,4 @@
 var logger = require('log4js').getLogger('router_middleware');
-var express = require('express');
 
 module.exports = {
     common: function(err, req, res, next) {

@@ -165,6 +165,10 @@ function SessionService() {
         response.success = session.success;
         response.message = session.message;
 
+        if(session.errors != null){
+            response.errors = session.errors;
+        }
+
         if (session.message == Session.messages.RUNNING) {
             response.recheckInterval = session.recheckInterval;
         }
