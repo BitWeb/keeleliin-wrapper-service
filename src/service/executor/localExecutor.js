@@ -35,6 +35,7 @@ function LocalExecutor() {
             var process = spawn(command, commandParams);
             self._run(response, process, callback);
         } catch (e) {
+            logger.error(e);
             callback(e.message);
         }
     };
