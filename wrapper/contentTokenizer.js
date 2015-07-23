@@ -16,6 +16,11 @@ function ContentTokenizer(){
 
         fs.readFile(contentFile, 'utf-8', function (err, sourceText) {
 
+            if(err){
+                session.setErrors(err);
+                return callback( err, session );
+            }
+
             self.getCommandModel(session, function (err, model) {
                 logger.debug('getCommandModel callback');
                 if(err) return callback(err);
