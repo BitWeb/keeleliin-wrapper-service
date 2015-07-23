@@ -3,7 +3,7 @@ var config = require('../../../config');
 var sessionService = require('../../service/sessionService');
 var Session = require('../../model/session');
 var LocalCommand = require('../../mapper/localCommand');
-
+var spawn = require('child_process').spawn;
 var fs = require('fs');
 
 function LocalExecutor() {
@@ -23,7 +23,7 @@ function LocalExecutor() {
 
     this._executeLocalCommand = function (localCommand, response, callback) {
 
-        var spawn = require('child_process').spawn;
+
         var command = localCommand.command;
         var commandParams = localCommand.commandParams;
 
