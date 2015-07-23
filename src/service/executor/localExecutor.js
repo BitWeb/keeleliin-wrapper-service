@@ -31,8 +31,12 @@ function LocalExecutor() {
         logger.debug(localCommand.commandParams);
         logger.debug(response);
 
-        var process = spawn(command, commandParams);
-        self._run(response, process, callback);
+        try {
+            var process = spawn(command, commandParams);
+            self._run(response, process, callback);
+        } catch (e) {
+            callback(e.message);
+        }
     };
 
     this._run = function (response, process, callback) {
