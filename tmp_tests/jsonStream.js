@@ -13,20 +13,23 @@ dataX = dataX + dataX + dataX +dataX +dataX +dataX +dataX + dataX + dataX + data
 var encoding = 'utf-8';
 
 var i = 0;
-function loop(){
+function loop(cb){
     i++;
     if(i % 100000 == 0){
         console.log(i);
     }
     if(i < 2300000){
         writer.write(dataX, encoding, function () {
-            loop();
+            loop(cb);
         });
     } else {
-        parse();
+        cb();
     }
 }
-loop();
+
+loop( function(){ parse(); } );
+
+
 
 function parse(){
 

@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "JSONStream": "^1.0.4",
+    "async": "^1.4.0",
     "body-parser": "~1.12.4",
     "debug": "~2.2.0",
     "express": "~4.12.4",
