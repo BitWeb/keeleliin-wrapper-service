@@ -93,7 +93,7 @@ function SessionService() {
             fs.writeFile(filePath, value, function (err) {
                 if (err) {
                     logger.error(err);
-                    callback('File write failed');
+                    return callback('File write failed');
                 }
                 logger.debug('File is written');
                 callback(null, filePath);
