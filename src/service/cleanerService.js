@@ -60,6 +60,17 @@ var CleanerService = function () {
             var filePath = folder + '/' + file;
             logger.debug(filePath);
             fs.stat(filePath, function(err, stat) {
+                if(err){
+                    logger.error(filePath);
+                    logger.error(err);
+                    return continueScan();
+                }
+
+                if(stat == undefined){
+                    logger.error('Stat is undefined for: ' + filePath);
+                    return continueScan();
+                }
+
                 if (stat.isDirectory()) {
                     var timeModified = stat.mtime.getTime();
                     var currentTime = new Date().getTime();
@@ -71,13 +82,13 @@ var CleanerService = function () {
                             } else {
                                 logger.debug('Session delete success: ' + file);
                             }
-                            continueScan();
+                            return continueScan();
                         });
                     } else {
-                        continueScan();
+                        return continueScan();
                     }
                 } else {
-                    continueScan();
+                    return continueScan();
                 }
             });
         }
