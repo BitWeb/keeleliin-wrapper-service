@@ -185,7 +185,11 @@ function SessionService() {
 
         var filesList = {};
         for(var i in session.outputFiles){
-            filesList[i] = { fileName: session.outputFiles[i].fileName, contentType: session.outputFiles[i].contentType };
+            filesList[i] = {
+                key: i,
+                fileName: session.outputFiles[i].fileName,
+                contentType: session.outputFiles[i].contentType
+            };
         }
         response.data.files = filesList;
 
