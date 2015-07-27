@@ -57,6 +57,10 @@ config.availableWappers = {
     MORFYHESTAJA : {
         class: 'morfyhestaja',
         commandTemplate: '/home/priit/Downloads/morfyhestaja/./parse.sh [data]'
+    },
+    ARCHIVE_EXTRACTOR: {
+        class: 'archiveExtractor',
+        commandTemplate: ''
     }
 };
 

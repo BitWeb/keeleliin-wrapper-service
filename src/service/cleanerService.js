@@ -32,13 +32,15 @@ var CleanerService = function () {
         fs.readdir(folder, function(err, files) {
             console.log('readFolder');
 
-            if(files.length > 0){
+            if(files != undefined && files.length > 0){
                 self.checkOnIndex(0, files, folder, function (err) {
                     if(err){
                         return logger.error(err);
                     }
                     return logger.info('Cleaned');
                 });
+            } else {
+                return logger.info('Cleaned');
             }
         });
     };

@@ -37,10 +37,12 @@ router.get('/:sessionId/:fileId', function(req, res) {
 
     logger.debug({request:'Get file', instance: req.params.sessionId, file: req.params.fileId});
 
-    wrapperService.getServiceFile(req.params.sessionId, req.params.fileId, function (err, filePath) {
+    wrapperService.getServiceFile(req.params.sessionId, req.params.fileId, function (err, outputFile) {
         if(err){
             return res.status(404).send({errors: err});
         }
+
+        var filePath = outputFile.filePath;
 
         var stat = fs.statSync(filePath);
         res.writeHead(200,{

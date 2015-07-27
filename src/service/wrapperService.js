@@ -49,13 +49,13 @@ function WrapperService() {
                 return callback(err);
             }
 
-            var path = session.outputFiles[fileId];
+            var outputFile = session.outputFiles[fileId];
 
-            if(!path){
+            if(!outputFile){
                 return callback('Dokumenti ei leitud');
             }
 
-            callback(null, path);
+            callback(null, outputFile);
         });
     };
 }
