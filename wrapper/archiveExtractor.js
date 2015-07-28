@@ -146,6 +146,7 @@ function ArchiveExtractor() {
                         session.addOutputFile(uniqid, {
                             filePath: filePath,
                             fileName: fileName,
+                            type: 'output',
                             contentType: mime.lookup(filePath) // getting the original file mime type
                         });
                     }

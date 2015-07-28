@@ -187,7 +187,7 @@ function SessionService() {
         for(var i in session.outputFiles){
             filesList.push({
                 key: i,
-                type: 'output',
+                type: session.outputFiles[i].type,
                 fileName: session.outputFiles[i].fileName,
                 contentType: session.outputFiles[i].contentType
             });

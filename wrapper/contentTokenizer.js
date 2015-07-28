@@ -6,6 +6,8 @@ var SessionService = require('./../src/service/sessionService');
 var async = require('async');
 var CommandModel = require('../src/mapper/commandModel');
 var fs = require('fs');
+var mime = require('mime');
+var path = require('path');
 
 function ContentTokenizer(){
 
@@ -68,8 +70,19 @@ function ContentTokenizer(){
                         var mapping = JSON.stringify(tokens);
                         logger.debug('Failide mappimine on lõpetatud');
                         SessionService.storeToFile(session.id, mapping, function (error, mappingPath) {
-                            session.addOutputFile('output', model.outputPaths.outputPath1);
-                            session.addOutputFile('mapping', mappingPath);
+                            session.addOutputFile('output', {
+                                type: 'output',
+                                fileName: path.basename(model.outputPaths.outputPath1),
+                                filePath: model.outputPaths.outputPath1,
+                                contentType: mime.lookup(model.outputPaths.outputPath1)
+                            });
+                            session.addOutputFile('mapping',  {
+                                type: 'mapping',
+                                fileName: path.basename(mappingPath),
+                                filePath: mappingPath,
+                                contentType: mime.lookup(mappingPath)
+                            });
+
                             return callback( error, session );
                         });
 
