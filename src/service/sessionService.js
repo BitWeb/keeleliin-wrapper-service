@@ -183,13 +183,13 @@ function SessionService() {
             response.data = session.data;
         }
 
-        var filesList = {};
+        var filesList = [];
         for(var i in session.outputFiles){
-            filesList[i] = {
+            filesList.push({
                 key: i,
                 fileName: session.outputFiles[i].fileName,
                 contentType: session.outputFiles[i].contentType
-            };
+            });
         }
         response.data.files = filesList;
 
