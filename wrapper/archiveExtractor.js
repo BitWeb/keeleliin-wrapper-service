@@ -18,7 +18,7 @@ function ArchiveExtractor() {
     var self = this;
 
     this.process = function(session, callback) {
-        var zipFile = session.requestFiles.resourceFile;
+        var zipFile = session.requestFiles.content;
         var read = fs.readFileSync(zipFile);
         var zip = isZip(read);
         var gzip = isTar(read);
