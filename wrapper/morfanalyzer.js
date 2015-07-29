@@ -41,7 +41,7 @@ function Morfyhestaja(){
 
     this.getCommandModel = function (session, callback) {
         var model = new CommandModel();
-        model.serviceProperties.commandTemplate = config.availableWappers.MORFYHESTAJA.commandTemplate;
+        model.serviceProperties.commandTemplate = config.availableWappers.MORFANALYZER.commandTemplate;
         model.init( session );
         model.setTextValue('data', session.requestFiles.content);
         model.render(function (err) {
