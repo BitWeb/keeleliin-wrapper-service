@@ -7,7 +7,7 @@ var fs = require('fs');
 var mime = require('mime');
 var path = require('path');
 
-function ContentTokenizer(){
+function Lausestaja(){
 
     var self = this;
 
@@ -41,7 +41,7 @@ function ContentTokenizer(){
 
     this.getCommandModel = function (session, callback) {
         var model = new CommandModel();
-        model.serviceProperties.commandTemplate = config.availableWappers.MORFYHESTAJA.commandTemplate;
+        model.serviceProperties.commandTemplate = config.availableWappers.LAUSESTAJA.commandTemplate;
         model.init( session );
         model.setTextValue('data', session.requestFiles.content);
         model.render(function (err) {
@@ -51,4 +51,4 @@ function ContentTokenizer(){
     }
 }
 
-module.exports = ContentTokenizer;
+module.exports = Lausestaja;
