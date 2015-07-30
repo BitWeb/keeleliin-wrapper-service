@@ -69,13 +69,15 @@ function Tokenizer(){
 
                         var mapping = JSON.stringify(tokens);
                         logger.debug('Failide mappimine on lõpetatud');
+
+                        session.addOutputFile('output', {
+                            type: 'output',
+                            fileName: path.basename(model.outputPaths.outputPath1),
+                            filePath: model.outputPaths.outputPath1,
+                            contentType: mime.lookup(model.outputPaths.outputPath1)
+                        });
+
                         SessionService.storeToFile(session.id, mapping, { extension:'txt' }, function (error, mappingPath) {
-                            session.addOutputFile('output', {
-                                type: 'output',
-                                fileName: path.basename(model.outputPaths.outputPath1),
-                                filePath: model.outputPaths.outputPath1,
-                                contentType: mime.lookup(model.outputPaths.outputPath1)
-                            });
                             session.addOutputFile('mapping',  {
                                 type: 'mapping',
                                 fileName: path.basename(mappingPath),

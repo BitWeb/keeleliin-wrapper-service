@@ -48,13 +48,13 @@ function LocalExecutor() {
         process.stderr.on('data', function (data) {
             logger.error('Got error: ' + data);
             response.isSuccess = false;
-            response.errors.push({util:data});
+            response.errors.push({util:data.toString()});
         });
 
         process.on('error', function (data) {
             logger.error('Got error: ' + data);
             response.isSuccess = false;
-            response.errors.push({util:data});
+            response.errors.push({util:data.toString()});
         });
 
         process.on('close', function (code, signal) {
