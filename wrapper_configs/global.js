@@ -47,24 +47,34 @@ config.log4js = {
 
 config.availableWappers = {
     TOKENIZER : {
-        class: 'tokenizer',
+        class: 'tokenizer'
+    },
+    MORFANALYZER : {
+        class: 'morfanalyzer'
+    },
+    LAUSESTAJA : {
+        class: 'lausestaja'
+    },
+    OSALAUSESTAJA : {
+        class: 'osalausestaja'
+    },
+    ARCHIVE_EXTRACTOR: {
+        class: 'archiveExtractor'
+    }
+};
+
+config.availableCommands = {
+    TOKENIZER : {
         commandTemplate: 'python /var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/tokenizer/tokenizer.py -i [data] -o [outputPath1]'
     },
     MORFANALYZER : {
-        class: 'morfanalyzer',
         commandTemplate: '/var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/./morfanalyzer.sh [data]'
     },
     LAUSESTAJA : {
-        class: 'lausestaja',
         commandTemplate: '/var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/./lausestaja.sh [data]'
     },
     OSALAUSESTAJA : {
-        class: 'osalausestaja',
         commandTemplate: '/var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/./osalausestaja.sh [data]'
-    },
-    ARCHIVE_EXTRACTOR: {
-        class: 'archiveExtractor',
-        commandTemplate: ''
     }
 };
 

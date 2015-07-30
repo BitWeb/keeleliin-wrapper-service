@@ -4,6 +4,8 @@ var sessionService = require('../service/sessionService');
 function CommandModel(){
 
     var self = this;
+    this.stdOutExtension = 'txt';
+
     this.session = null;
     this.serviceProperties = {};//näiteks local command template
     this.outputPaths = {}; //väljundfailid
@@ -13,6 +15,10 @@ function CommandModel(){
 
     this.init = function ( session ) {
         self.session = session;
+    };
+
+    this.setStdOutExtension = function (stdOutExtension) {
+        this.stdOutExtension = stdOutExtension;
     };
 
     this.setTextValue = function (key, value) {
@@ -31,8 +37,8 @@ function CommandModel(){
     /*
     * Kasutatava programmi väljund
     * */
-    this.addOutputPath = function (key) {
-        self.outputPaths[key] = sessionService.getNewSessionFilePath( self.session );
+    this.addOutputPath = function (key, options) {
+        self.outputPaths[key] = sessionService.getNewSessionFilePath( self.session, options );
         logger.debug('Output path added: ' + key +'  ' + self.outputPaths[key] );
     };
 
@@ -50,7 +56,7 @@ function CommandModel(){
 
     this._storeToFile = function (index, callback) {
         var fileValue = fileValues[index];
-        sessionService.storeToFile(self.session.id, fileValue['value'], function (err, path) {
+        sessionService.storeToFile(self.session.id, fileValue['value'],{}, function (err, path) {
             if(err) return callback(err);
 
             self.keyValues[fileValue['key']] = path;

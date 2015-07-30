@@ -7,7 +7,7 @@ var fs = require('fs');
 var mime = require('mime');
 var path = require('path');
 
-function Lausestaja(){
+function Osalausestaja(){
 
     var self = this;
 
@@ -41,7 +41,7 @@ function Lausestaja(){
 
     this.getCommandModel = function (session, callback) {
         var model = new CommandModel();
-        model.serviceProperties.commandTemplate = config.availableCommands.LAUSESTAJA.commandTemplate;
+        model.serviceProperties.commandTemplate = config.availableCommands.OSALAUSESTAJA.commandTemplate;
         model.init( session );
         model.setTextValue('data', session.requestFiles.content);
         model.render(function (err) {
@@ -51,4 +51,4 @@ function Lausestaja(){
     }
 }
 
-module.exports = Lausestaja;
+module.exports = Osalausestaja;

@@ -13,7 +13,7 @@ function LocalExecutor() {
 
         var response = {
             isSuccess:true,
-            stdOutPath: sessionService.getNewSessionFilePath(commandModel.session),
+            stdOutPath: sessionService.getNewSessionFilePath(commandModel.session, {extension: commandModel.stdOutExtension}),
             errors: []
         };
 
@@ -22,7 +22,6 @@ function LocalExecutor() {
     };
 
     this._executeLocalCommand = function (localCommand, response, callback) {
-
 
         var command = localCommand.command;
         var commandParams = localCommand.commandParams;

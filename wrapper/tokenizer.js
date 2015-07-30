@@ -69,7 +69,7 @@ function Tokenizer(){
 
                         var mapping = JSON.stringify(tokens);
                         logger.debug('Failide mappimine on lõpetatud');
-                        SessionService.storeToFile(session.id, mapping, function (error, mappingPath) {
+                        SessionService.storeToFile(session.id, mapping, { extension:'txt' }, function (error, mappingPath) {
                             session.addOutputFile('output', {
                                 type: 'output',
                                 fileName: path.basename(model.outputPaths.outputPath1),
@@ -97,10 +97,10 @@ function Tokenizer(){
 
     this.getCommandModel = function (session, callback) {
         var model = new CommandModel();
-        model.serviceProperties.commandTemplate = config.availableWappers.TOKENIZER.commandTemplate;
+        model.serviceProperties.commandTemplate = config.availableCommands.TOKENIZER.commandTemplate;
         model.init( session );
         model.setTextValue('data', session.requestFiles.content);
-        model.addOutputPath('outputPath1');
+        model.addOutputPath('outputPath1', {extension: 'txt'});
         model.render(function (err) {
             logger.debug('Render callback');
             callback(err, model);

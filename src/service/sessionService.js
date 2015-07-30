@@ -80,16 +80,10 @@ function SessionService() {
         return config.service.staticParams.storagePath + '/' + sessionId;
     };
 
-    this.getNewFilePath = function (sessionId) {
-        var sessionPath = self.getStorePath(sessionId);
-        return sessionPath + '/' + randomstring.generate(10);
-    };
-
-
-    this.storeToFile = function (sessionId, value, callback) {
+    this.storeToFile = function (sessionId, value, options, callback) {
 
         var writeFile = function () {
-            var filePath = self.getNewFilePath(sessionId);
+            var filePath = self.getNewFilePath(sessionId, options);
             fs.writeFile(filePath, value, function (err) {
                 if (err) {
                     logger.error(err);
@@ -108,8 +102,19 @@ function SessionService() {
         self.saveSession(session, callback);
     };
 
-    this.getNewSessionFilePath = function (session) {
-        return self.getStorePath(session.id) + '/' + randomstring.generate(10);
+    this.getNewSessionFilePath = function (session, options) {
+        return self.getNewFilePath(session.id, options);
+    };
+
+    this.getNewFilePath = function (sessionId, options) {
+
+        var path = self.getStorePath(sessionId) + '/' + randomstring.generate(10);
+        if(options){
+            if(options.extension){
+                path = path + '.' + options.extension;
+            }
+        }
+        return path;
     };
 
     this.checkSessionDir = function (sessionId, callback) {
