@@ -10,8 +10,6 @@ var realFs = require('fs');
 var gracefulFs = require('graceful-fs');
 gracefulFs.gracefulify(realFs); //monkey-patch for EMFILE
 
-
-
 var log4js = require('log4js');
 var path = require('path');
 var logger = require('morgan');
@@ -35,7 +33,7 @@ var log4jsLogger = log4js.getLogger('wrapper_server_js');
 
 app.use(logger('dev'));
 app.use(bodyParser.json({limit: '1000mb'})); // for parsing application/json
-app.use(multer({ dest: config.service.staticParams.tmpPath})); // for parsing multipart/form-data
+app.use(multer({ dest: config.fs.tmpPath})); // for parsing multipart/form-data
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(routerMiddleware.routeLogger);
 app.use(errorhandlerMiddleware.common);
@@ -68,7 +66,7 @@ function startCluster( instanceCount, cb ){
 }
 
 function startInstance(cb) {
-    var port = ServerUtil.normalizePort(config.port);
+    var port = ServerUtil.normalizePort(config.wrapper.port);
     app.set('port', port);
     var server = http.createServer(app);
     server.listen(port);

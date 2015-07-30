@@ -1,35 +1,30 @@
-/**
- * Kopeeri antud fail faili config.js
- *
- * require soovitud wrapperi conf ja kirjuta üle vajalikud parameetrid
- */
 
-// var config = require('./wrapper_configs/config_tokenizer');
+var config = require('./wrapper_configs/global');
 
-/*
-config.port = 8001;
-config.log4js.appenders.push({
-                        "type": "logLevelFilter",
-                        "level": "ERROR",
-                        "appender": {
-                            "type": "smtp",
-                            "recipients": "test@test.com",
-                            "sendInterval": 10, //sec
-                            "transport": "SMTP",
-                            "SMTP": {
-                                "host": "smtp.gmail.com",
-                                "secureConnection": false,
-                                "port": 587,
-                                "auth": {
-                                    "user": "***********",
-                                    "pass": "***********"
-                                },
-                                "debug": true
-                            }
-                        }
-                    });
+/*config.log4js.appenders.push({
+    "type": "logLevelFilter",
+    "level": "ERROR",
+    "appender": {
+        "type": "smtp",
+        "recipients": "***********",
+        "sendInterval": 10, //sec
+        "transport": "SMTP",
+        "SMTP": {
+            "host": "smtp.gmail.com",
+            "secureConnection": false,
+            "port": 587,
+            "auth": {
+                "user": "***********",
+                "pass": "***********"
+            },
+            "debug": true
+        }
+    }
+});*/
 
-config.availableWappers.TOKENIZER.commandTemplate = 'python /home/priit/Programs/KEELELIIN/pyutil/tokenizer.py -i [data] -o [outputPath1]';
-config.service.staticParams.storagePath = "/home/priit/wrapper";
-config.service.staticParams.tmpPath = "/tmp/wrapper/";
-module.exports = config;*/
+//config.wrapper = config.availableWappers.<WRAPPERKEY>; //eg config.wrapper = config.availableWappers.TOKENIZER;
+//config.wrapper.command.commandTemplate = 'python /home/priit/Programs/KEELELIIN/pyutil/tokenizer.py -i [data] -o [outputPath1]';
+//config.fs.storagePath = "/home/priit/wrapper";
+//config.fs.tmpPath = "/tmp/wrapper/";
+
+module.exports = config;

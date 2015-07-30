@@ -25,13 +25,13 @@ function ServiceRequest( requestBody, requestFiles ) {
 
     this._mapParams = function(){
 
-        var staticParams = config.service.staticParams;
+        var staticParams = config.wrapper.requestConf.staticParams;
 
-        for(var property in config.service.requestBodyTemplate){
+        for(var property in config.wrapper.requestConf.requestBodyTemplate){
 
             var value = self.data[property];
 
-            var mapping = config.service.requestBodyParamsMappings[property];
+            var mapping = config.wrapper.requestConf.requestBodyParamsMappings[property];
 
             if(staticParams[property] != undefined){
                 value = staticParams[property];
@@ -57,7 +57,7 @@ function ServiceRequest( requestBody, requestFiles ) {
 
     this._checkFiles = function () {
 
-        for( var fileId in config.service.requestFiles){
+        for( var fileId in config.wrapper.requestConf.requestFiles ){
             var file = this.files[fileId];
             if(!file){
                 self.setMessage(fileId, 'Nõutud faili ei saadetud');

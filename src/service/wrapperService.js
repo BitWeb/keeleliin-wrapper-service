@@ -1,8 +1,7 @@
 var logger = require('log4js').getLogger('wrapper_service');
 var config = require('../../config');
-var Processor = require(__base + '/wrapper/' + config.service.staticParams.wrapper);
+var Processor = require(__base + '/wrapper/' + config.wrapper.class);
 var sessionService = require('./sessionService');
-var Session = require('../model/session');
 
 function WrapperService() {
     var self = this;

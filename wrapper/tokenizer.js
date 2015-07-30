@@ -99,7 +99,11 @@ function Tokenizer(){
 
     this.getCommandModel = function (session, callback) {
         var model = new CommandModel();
-        model.serviceProperties.commandTemplate = config.availableCommands.TOKENIZER.commandTemplate;
+
+        logger.error('commandTemplate');
+        logger.error(config.wrapper);
+
+        model.serviceProperties.commandTemplate = config.wrapper.command.commandTemplate;
         model.init( session );
         model.setTextValue('data', session.requestFiles.content);
         model.addOutputPath('outputPath1', {extension: 'txt'});

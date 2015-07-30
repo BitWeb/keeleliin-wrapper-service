@@ -7,8 +7,7 @@ router.use('/api/v1/service', require(__base + 'controllers/api/v1/service'));
 /* GET home page. Service description from config */
 router.get('/', function( req, res ) {
   res.render('index', {
-    title: config.service.title,
-    description: config.service.description
+    title: config.wrapper.title
   });
 });
 

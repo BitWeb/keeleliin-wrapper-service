@@ -77,7 +77,7 @@ function SessionService() {
     };
 
     this.getStorePath = function (sessionId) {
-        return config.service.staticParams.storagePath + '/' + sessionId;
+        return config.fs.storagePath + '/' + sessionId;
     };
 
     this.storeToFile = function (sessionId, value, options, callback) {

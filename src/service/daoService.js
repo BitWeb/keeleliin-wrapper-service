@@ -5,7 +5,7 @@ var config = require(__base + 'config');
 var DaoService = function(){
     var self = this;
 
-    var prefix = config.service.staticParams.uniqueId + ':';
+    var prefix = config.wrapper.port + ':';
 
     this.client = redis.createClient(config.redis.port, config.redis.host, {});
 

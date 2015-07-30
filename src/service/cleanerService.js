@@ -14,7 +14,7 @@ var CleanerService = function () {
     this.init = function(){
         logger.debug('init');
 
-        if(!config.service.staticParams.sessionMaxLifetime){
+        if(!config.wrapper.requestConf.staticParams.sessionMaxLifetime){
             return;
         }
 
@@ -27,7 +27,7 @@ var CleanerService = function () {
     this.cleanSystem = function () {
         logger.debug('clean A');
 
-        var folder = config.service.staticParams.storagePath;
+        var folder = config.fs.storagePath;
 
         fs.readdir(folder, function(err, files) {
             console.log('readFolder');
@@ -77,7 +77,7 @@ var CleanerService = function () {
                     var timeModified = stat.mtime.getTime();
                     var currentTime = new Date().getTime();
 
-                    if(currentTime - timeModified > ( config.service.staticParams.sessionMaxLifetime * 1000 )){
+                    if(currentTime - timeModified > ( config.wrapper.requestConf.staticParams.sessionMaxLifetime * 1000 )){
                         sessionService.removeSession(file, function (err) {
                             if(err){
                                 logger.error('Session delete failed: ' + file);

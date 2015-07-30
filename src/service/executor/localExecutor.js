@@ -1,7 +1,5 @@
 var logger = require('log4js').getLogger('local_executor');
-var config = require('../../../config');
 var sessionService = require('../../service/sessionService');
-var Session = require('../../model/session');
 var LocalCommand = require('../../mapper/localCommand');
 var spawn = require('child_process').spawn;
 var fs = require('fs');
