@@ -1,4 +1,4 @@
-var config = require('./config_global');
+var config = require('./global');
 config.port = 3003;
 config.service.title = 'Morfoloogiline analüüs';
 config.service.staticParams.uniqueId = 'morfanalyzer';

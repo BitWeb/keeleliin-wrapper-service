@@ -1,4 +1,4 @@
-var config = require('./config_global');
+var config = require('./global');
 config.port = 3004;
 config.service.title = 'Arhiivi lahtipakkija';
 config.service.staticParams.uniqueId = 'unzipper';

@@ -1,4 +1,4 @@
-var config = require('./config_global');
+var config = require('./global');
 config.port = 3002;
 config.service.title = 'Sõnestaja';
 config.service.staticParams.uniqueId = 'tokenizer';

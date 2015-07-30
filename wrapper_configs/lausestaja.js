@@ -1,4 +1,4 @@
-var config = require('./config_global');
+var config = require('./global');
 config.port = 3005;
 config.service.title = 'Lausestaja';
 config.service.staticParams.uniqueId = 'sentence';
