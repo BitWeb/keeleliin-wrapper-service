@@ -1,8 +1,9 @@
-var logger = require('log4js').getLogger('router_middleware');
+var logger = require('log4js').getLogger('error_handler_middleware');
 
 module.exports = {
     common: function(err, req, res, next) {
-        logger.error(err.stack);
+
+        logger.error('Common error: ', err);
 
         res.status(err.status || 500);
         res.send({
@@ -11,7 +12,8 @@ module.exports = {
     },
 
     error404: function(req, res, next) {
-        logger.error('Error 404 happened');
+        logger.debug('Error 404 happened');
+
         res.status(404);
         res.send({
             errors: 'Lehekülge ei leitud'

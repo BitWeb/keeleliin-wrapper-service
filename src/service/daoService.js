@@ -14,7 +14,7 @@ var DaoService = function(){
     });
 
     this.client.on("error", function (err) {
-        logger.error("Redis Error " + err);
+        logger.error("Redis Error ", err);
     });
 
     this.set =  function(key, value, cb){

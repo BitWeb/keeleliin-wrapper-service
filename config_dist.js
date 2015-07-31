@@ -6,6 +6,14 @@ var config = require('./wrapper_configs/global');
     "level": "ERROR",
     "appender": {
         "type": "smtp",
+        "layout": {
+             type: 'pattern',
+             pattern: "[%d] [%x{port}-%x{pid}][%5.5p] %c - %m",
+             tokens: {
+                     pid: process.pid,
+                     port: config.port
+                 }
+         },
         "recipients": "***********",
         "sendInterval": 10, //sec
         "transport": "SMTP",

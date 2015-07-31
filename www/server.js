@@ -36,10 +36,9 @@ app.use(bodyParser.json({limit: '1000mb'})); // for parsing application/json
 app.use(multer({ dest: config.fs.tmpPath})); // for parsing multipart/form-data
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(routerMiddleware.routeLogger);
-app.use(errorhandlerMiddleware.common);
 app.use(controllers);
 app.use(errorhandlerMiddleware.error404);
-
+app.use(errorhandlerMiddleware.common);
 /**
  * Create HTTP server.
  */
@@ -56,7 +55,7 @@ function startCluster( instanceCount, cb ){
         }
 
         cluster.on('exit', function(worker, code, signal) {
-            log4jsLogger.info('worker ' + worker.process.pid + ' died; Code: ' + code + '; Signal: ' + signal);
+            log4jsLogger.error('worker ' + worker.process.pid + ' died; Code: ' + code + '; Signal: ' + signal);
         });
 
         cleanerService.init();

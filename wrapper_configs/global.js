@@ -47,6 +47,14 @@ config.log4js = {
             "level": "ERROR",
             "appender": {
                 "type": "smtp",
+                 "layout": {
+                     type: 'pattern',
+                     pattern: "[%d] [%x{port}-%x{pid}][%5.5p] %c - %m",
+                     tokens: {
+                             pid: process.pid,
+                             port: config.port
+                         }
+                 },
                 "recipients": "**********",
                 "sendInterval": 10, //sec
                 "transport": "SMTP",
@@ -129,8 +137,6 @@ var simpleCommandRequest = {
     }
 };
 
-
-
 config.availableCommands = {
     TOKENIZER : {
         commandTemplate: 'python /var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/tokenizer/tokenizer.py -i [data] -o [outputPath1]'
@@ -156,11 +162,12 @@ config.availableCommands = {
 };
 
 config.availableWappers = {
-    TOKENIZER : {
-        title: 'Sõnestaja',
-        port: 3008,
-        class: 'tokenizer',
-        command: config.availableCommands.TOKENIZER,
+
+    LAUSESTAJA : {
+        title: 'Lausestaja',
+        port: 3001,
+        class: 'simpleLocalCommand',
+        command: config.availableCommands.LAUSESTAJA,
         requestConf: simpleCommandRequest
     },
     MORFANALYSAATOR : {
@@ -170,24 +177,11 @@ config.availableWappers = {
         command: config.availableCommands.MORFANALYSAATOR,
         requestConf: simpleCommandRequest
     },
-    LAUSESTAJA : {
-        title: 'Lausestaja',
-        port: 3001,
-        class: 'simpleLocalCommand',
-        command: config.availableCommands.LAUSESTAJA,
-        requestConf: simpleCommandRequest
-    },
     OSALAUSESTAJA : {
-        title: 'Osalausestamine',
+        title: 'Osalausestaja',
         port: 3003,
         class: 'simpleLocalCommand',
         command: config.availableCommands.OSALAUSESTAJA,
-        requestConf: simpleCommandRequest
-    },
-    ARCHIVE_EXTRACTOR: {
-        title: 'Arhiivi lahtipakkija',
-        port: 3007,
-        class: 'archiveExtractor',
         requestConf: simpleCommandRequest
     },
     MORFYHESTAJA: {
@@ -209,6 +203,21 @@ config.availableWappers = {
         port: 3006,
         class: 'simpleLocalCommand',
         command: config.availableCommands.S6LT_SYN,
+        requestConf: simpleCommandRequest
+    },
+
+
+    ARCHIVE_EXTRACTOR: {
+        title: 'Arhiivi lahtipakkija',
+        port: 3007,
+        class: 'archiveExtractor',
+        requestConf: simpleCommandRequest
+    },
+    TOKENIZER : {
+        title: 'Sõnestaja',
+        port: 3008,
+        class: 'tokenizer',
+        command: config.availableCommands.TOKENIZER,
         requestConf: simpleCommandRequest
     }
 };

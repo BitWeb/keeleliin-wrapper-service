@@ -25,7 +25,6 @@ var CleanerService = function () {
     };
 
     this.cleanSystem = function () {
-        logger.debug('clean A');
 
         var folder = config.fs.storagePath;
 
@@ -63,8 +62,7 @@ var CleanerService = function () {
             logger.debug(filePath);
             fs.stat(filePath, function(err, stat) {
                 if(err){
-                    logger.error(filePath);
-                    logger.error(err);
+                    logger.error(filePath, err);
                     return continueScan();
                 }
 
