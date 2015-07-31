@@ -6,6 +6,7 @@ var CommandModel = require('../src/mapper/commandModel');
 var fs = require('fs');
 var mime = require('mime');
 var path = require('path');
+var FileUtil = require('./../src/util/file');
 
 function SimpleLocalCommand(){
 
@@ -29,7 +30,7 @@ function SimpleLocalCommand(){
 
                 session.addOutputFile('output', {
                     type: 'output',
-                    fileName: path.basename(response.stdOutPath),
+                    fileName: config.wrapper.id + '_output.' + FileUtil.getExtension( response.stdOutPath ),
                     filePath: response.stdOutPath,
                     contentType: mime.lookup(response.stdOutPath)
                 });

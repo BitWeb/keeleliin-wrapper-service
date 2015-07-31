@@ -8,6 +8,7 @@ var CommandModel = require('../src/mapper/commandModel');
 var fs = require('fs');
 var mime = require('mime');
 var path = require('path');
+var FileUtil = require('./../src/util/file');
 
 function Tokenizer(){
 
@@ -72,7 +73,7 @@ function Tokenizer(){
 
                         session.addOutputFile('output', {
                             type: 'output',
-                            fileName: path.basename(model.outputPaths.outputPath1),
+                            fileName: config.wrapper.id + '_output.' + FileUtil.getExtension( model.outputPaths.outputPath1 ),
                             filePath: model.outputPaths.outputPath1,
                             contentType: mime.lookup(model.outputPaths.outputPath1)
                         });
@@ -80,20 +81,16 @@ function Tokenizer(){
                         SessionService.storeToFile(session.id, mapping, { extension:'txt' }, function (error, mappingPath) {
                             session.addOutputFile('mapping',  {
                                 type: 'mapping',
-                                fileName: path.basename(mappingPath),
+                                fileName: config.wrapper.id + '_mapping.' + FileUtil.getExtension( mappingPath ),
                                 filePath: mappingPath,
                                 contentType: mime.lookup(mappingPath)
                             });
 
                             return callback( error, session );
                         });
-
                     });
-
                 });
-
             });
-
         });
     };
 

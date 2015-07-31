@@ -165,6 +165,7 @@ config.availableWappers = {
 
     LAUSESTAJA : {
         title: 'Lausestaja',
+        id: 'lau',
         port: 3001,
         class: 'simpleLocalCommand',
         command: config.availableCommands.LAUSESTAJA,
@@ -172,6 +173,7 @@ config.availableWappers = {
     },
     MORFANALYSAATOR : {
         title: 'Morfoloogiline analüüs',
+        id: 'moa',
         port: 3002,
         class: 'simpleLocalCommand',
         command: config.availableCommands.MORFANALYSAATOR,
@@ -179,6 +181,7 @@ config.availableWappers = {
     },
     OSALAUSESTAJA : {
         title: 'Osalausestaja',
+        id: 'osl',
         port: 3003,
         class: 'simpleLocalCommand',
         command: config.availableCommands.OSALAUSESTAJA,
@@ -186,6 +189,7 @@ config.availableWappers = {
     },
     MORFYHESTAJA: {
         title: 'Morfoloogiline ühestamine (kitsenduste grammatika)',
+        id: 'moy',
         port: 3004,
         class: 'simpleLocalCommand',
         command: config.availableCommands.MORFYHESTAJA,
@@ -193,6 +197,7 @@ config.availableWappers = {
     },
     PIND_SYN: {
         title: 'Pindsüntaktiline analüüs',
+        id: 'pia',
         port: 3005,
         class: 'simpleLocalCommand',
         command: config.availableCommands.PIND_SYN,
@@ -200,21 +205,23 @@ config.availableWappers = {
     },
     S6LT_SYN: {
         title: 'Sõltuvussüntaktiline analüüs (ja järeltöötlus)',
+        id: 's6a',
         port: 3006,
         class: 'simpleLocalCommand',
         command: config.availableCommands.S6LT_SYN,
         requestConf: simpleCommandRequest
     },
 
-
     ARCHIVE_EXTRACTOR: {
         title: 'Arhiivi lahtipakkija',
+        id: 'uzip',
         port: 3007,
         class: 'archiveExtractor',
         requestConf: simpleCommandRequest
     },
     TOKENIZER : {
         title: 'Sõnestaja',
+        id: 's6n',
         port: 3008,
         class: 'tokenizer',
         command: config.availableCommands.TOKENIZER,

@@ -43,6 +43,15 @@ var FileUtil = {
 
     rmdir: function(path, callback){
         return rimraf(path, callback);
+    },
+
+    getExtension: function ( filename ) {
+
+        var dotIndex = filename.lastIndexOf('.');
+        if(dotIndex > -1){
+            return filename.substr(filename.lastIndexOf('.')+1);
+        }
+        return null;
     }
 };
 
