@@ -75,11 +75,11 @@ config.log4js = {
 
 /*var someCommandRequest = {
     requestBodyTemplate: {
-        is_async: null//,
+        isAsync: null//,
         someparam: null
     },
     requestBodyParamsMappings: {
-        is_async: {
+        isAsync: {
             usageType: config.paramUsageTypes.META,
             filter: function(value){
                 return value == 1;
@@ -115,10 +115,10 @@ config.log4js = {
 
 var simpleCommandRequest = {
     requestBodyTemplate: {
-        is_async: null
+        isAsync: null
     },
     requestBodyParamsMappings: {
-        is_async: {
+        isAsync: {
             usageType: config.paramUsageTypes.META,
             filter: function(value){
                 return value == 1;

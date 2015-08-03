@@ -33,7 +33,7 @@ function SessionService() {
         session.success = true;
         session.requestBody = serviceRequest.data;
         session.requestFiles = {};
-        session.isAsync = serviceRequest.data.is_async;
+        session.isAsync = serviceRequest.data.isAsync;
         session.isFinished = false;
         self.saveSession(session, function(err){
             if(err) return cb(err);
@@ -164,7 +164,7 @@ function SessionService() {
         var response = {};
 
         if (session.id) {
-            response.serviceId = session.id;
+            response.sessionId = session.id;
         }
 
         response.success = session.success;

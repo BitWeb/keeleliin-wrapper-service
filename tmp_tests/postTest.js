@@ -13,7 +13,7 @@ var url = baseUrl + '/api/v1/service';
 var path = 'keeleliin.log';
 
 var formData = {
-    "is_async": 0,
+    "isAsync": 0,
     "someparam": 'no',
     "content": fs.createReadStream(path)
 };
@@ -28,7 +28,7 @@ request.post( { url: url, formData: formData }, function (err, resp, body) {
         var respBody = JSON.parse(resp.body);
 
         getData(respBody.response.serviceId, 'output');
-        /*getData(respBody.response.serviceId, 'mapping');*/
+        /*getData(respBody.response.sessionId, 'mapping');*/
     }
 });
 

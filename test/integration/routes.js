@@ -88,7 +88,7 @@ describe('Routing', function() {
                         throw err;
                     }
 
-                    res.body.response.should.have.property('serviceId');
+                    res.body.response.should.have.property('sessionId');
                     res.body.response.message.should.equal('OK');
                     res.body.response.should.have.property('pipecontent');
                     res.body.response.pipecontent.should.not.equal(undefined);
@@ -144,7 +144,7 @@ describe('Routing', function() {
                         throw err;
                     }
 
-                    res.body.response.should.have.property('serviceId');
+                    res.body.response.should.have.property('sessionId');
                     res.body.response.message.should.equal('RUNNING');
                     res.body.response.should.not.have.property('pipecontent');
 
