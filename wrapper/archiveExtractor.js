@@ -13,6 +13,7 @@ var isTar = require('is-tar');
 var zlib = require('zlib');
 var tar = require('tar');
 var recursiveReaddir = require('recursive-readdir');
+var isTextOrBinary = require('istextorbinary');
 
 function ArchiveExtractor() {
     var self = this;
@@ -64,7 +65,7 @@ function ArchiveExtractor() {
                         return callback(err, session);
                     }
 
-                    if (isFile) {
+                    if (isFile && isTextOrBinary.isTextSync(entry.path)) {
                         var uniqid = randomstring.generate(10);
                         var filePath = path.join(directory, uniqid);
                         //logger.debug('Filepath: ' + filePath);

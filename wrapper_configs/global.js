@@ -217,7 +217,29 @@ config.availableWappers = {
         id: 'uzip',
         port: 3007,
         class: 'archiveExtractor',
-        requestConf: simpleCommandRequest
+        requestConf: {
+            requestBodyTemplate: {
+                //isAsync: null
+            },
+            requestBodyParamsMappings: {
+                //isAsync: {
+                //    usageType: config.paramUsageTypes.META,
+                //    filter: function(value){
+                //        return value == 1;
+                //    },
+                //    required: true,
+                //    allowEmpty: false,
+                //    validator: function(value, request){ return true; }
+                //}
+            },
+            requestFiles: {
+                content: null
+            },
+            staticParams: {
+                sessionMaxLifetime: 600,
+                isAsync: 0
+            }
+        }
     },
     TOKENIZER : {
         title: 'Sõnestaja',
