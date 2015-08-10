@@ -41,7 +41,7 @@ function SessionService() {
             self.checkSessionDir(sessionId, function (err) {
                 if(err) return cb(err);
                 self._storeRequestFiles(session, serviceRequest.files, function (err) {
-                    return cb(err);
+                    return cb(err, session);
                 });
             });
         });
