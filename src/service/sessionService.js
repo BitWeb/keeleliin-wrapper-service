@@ -40,8 +40,8 @@ function SessionService() {
             if(err) return cb(err);
             self.checkSessionDir(sessionId, function (err) {
                 if(err) return cb(err);
-                self._storeRequestFiles(session, serviceRequest.files, function (err, session) {
-                    return cb(err, session);
+                self._storeRequestFiles(session, serviceRequest.files, function (err) {
+                    return cb(err);
                 });
             });
         });
@@ -67,8 +67,8 @@ function SessionService() {
                     callback();
                 });
             },
-            function ( err, session ) {
-                cb( err, session );
+            function ( err ) {
+                cb(err);
             }
         );
     };
