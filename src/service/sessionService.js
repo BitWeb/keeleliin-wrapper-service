@@ -5,6 +5,7 @@ var fs = require('fs');
 var daoService = require('./daoService');
 var Session = require('../model/session');
 var FileUtil = require('../util/file');
+var async = require('async');
 
 function SessionService() {
 
@@ -53,27 +54,23 @@ function SessionService() {
             tmpList.push(files[i]);
         }
 
-        if(tmpList.length > 0){
-            self._storeOnIndex(session, tmpList, 0, cb)
-        }
-    };
+        async.eachSeries(
+            tmpList,
+            function (item, callback) {
 
-    this._storeOnIndex = function (session, tmpList, index, cb) {
+                var tmpFile = item;
+                var sessionFilePath = self.getNewFilePath(session.id);
 
-        var tmpFile = tmpList[index];
-        var sessionFilePath = this.getNewFilePath(session.id);
-
-        FileUtil.mv(tmpFile.path, sessionFilePath, function(err){
-           if(err) return cb(err);
-            session.requestFiles[tmpFile.fieldname] = sessionFilePath;
-
-            if(index < tmpList - 1){
-                index = index + 1;
-                self._storeOnIndex(session, tmpList, 0, cb)
-            } else {
-                cb(null, session);
+                FileUtil.mv(tmpFile.path, sessionFilePath, function(err){
+                    if(err) return callback(err);
+                    session.requestFiles[tmpFile.fieldname] = sessionFilePath;
+                    callback();
+                });
+            },
+            function ( err, session ) {
+                cb( err, session );
             }
-        });
+        );
     };
 
     this.getStorePath = function (sessionId) {
