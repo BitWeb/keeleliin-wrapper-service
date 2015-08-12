@@ -158,6 +158,9 @@ config.availableCommands = {
     },
     S6LT_SYN : {
         commandTemplate: '/var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/./s6ltsyn.sh [data]'
+    },
+    CONCAT : {
+        commandTemplate: 'cat [data]'
     }
 };
 
@@ -247,6 +250,14 @@ config.availableWappers = {
         port: 3008,
         class: 'tokenizer',
         command: config.availableCommands.TOKENIZER,
+        requestConf: simpleCommandRequest
+    },
+    CONCAT : {
+        title: 'Lihtne konkateneerija',
+        id: 'concat',
+        port: 3009,
+        class: 'simpleLocalCommand',
+        command: config.availableCommands.CONCAT,
         requestConf: simpleCommandRequest
     }
 };
