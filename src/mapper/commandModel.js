@@ -1,5 +1,6 @@
 var logger = require('log4js').getLogger('command_model');
 var sessionService = require('../service/sessionService');
+var async = require('async');
 
 function CommandModel(){
 
@@ -21,7 +22,7 @@ function CommandModel(){
         this.stdOutExtension = stdOutExtension;
     };
 
-    this.setTextValue = function (key, value) {
+    this.setKeyValue = function (key, value) {
         self.keyValues[key] = value;
     };
 
@@ -42,33 +43,26 @@ function CommandModel(){
         logger.debug('Output path added: ' + key +'  ' + self.outputPaths[key] );
     };
 
-    this.render = function ( callback ) {
+    this.render = function ( cb ) {
+
         for(i in self.outputPaths){
             self.keyValues[i] = self.outputPaths[i];
         }
-        //store file values
-        if(fileValues.length > 0){
-            self._storeToFile(0, callback);
-        } else {
-            callback();
-        }
-    };
 
-    this._storeToFile = function (index, callback) {
-        var fileValue = fileValues[index];
-        sessionService.storeToFile(self.session.id, fileValue['value'],{}, function (err, path) {
-            if(err) return callback(err);
-
-            self.keyValues[fileValue['key']] = path;
-            index = index + 1;
-
-            if(fileValues.length < index){
-                self._storeToFile(index, callback);
-            } else {
-                callback();
+        async.each(
+            fileValues,
+            function (fileValue, callback) {
+                sessionService.storeToFile(self.session.id, fileValue['value'],{}, function (err, path) {
+                    if(err) return callback(err);
+                    self.keyValues[fileValue['key']] = path;
+                    callback();
+                });
+            },
+            function (err) {
+                cb(err);
             }
-        });
-    }
+        );
+    };
 }
 
 module.exports = CommandModel;

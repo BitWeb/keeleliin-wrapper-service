@@ -5,12 +5,9 @@ function LocalCommand( commandModel ) {
     var self = this;
 
     var keyValues = commandModel.keyValues;
-
-    logger.debug(keyValues);
-
     var commandTemplate = commandModel.serviceProperties.commandTemplate;
 
-    this.templateParams = commandTemplate.match(/\[(.*?)]/g);
+    var templateParams = commandTemplate.match(/\[(.*?)]/g);
     var commandParts = commandTemplate.split(' ');
 
     this.command = "";
@@ -26,26 +23,39 @@ function LocalCommand( commandModel ) {
 
     this._parseParams = function () {
 
-        for(index in this.templateParams){
+        for(index in templateParams){
 
-            var propertyItem = this.templateParams[index];
-            var propertyKey = propertyItem.substr(1, (propertyItem.length - 2));
+            var property = templateParams[index];
+            var propertyKey = property.substr(1, (property.length - 2));
             var value = keyValues[propertyKey];
 
             if(!value){
                 throw new Error('Value not detected for property ' + propertyKey);
             }
 
-            self._replacePropertyValue(propertyItem, value);
+            self._setCommandPropertyValue(property, value);
         }
     };
 
-    this._replacePropertyValue = function (propertyItem, value) {
+    this._setCommandPropertyValue = function (propertyItem, value) {
+
+        var newCommandParts = [];
 
         for (i in commandParts) {
-            var part = commandParts[i];
-            commandParts[i] = part.replace(propertyItem, value);
+            if( commandParts[i] == propertyItem){
+                if(Array.isArray(value)){
+                    for(j in value){
+                        newCommandParts.push(value[j]);
+                    }
+                } else {
+                    newCommandParts.push(value);
+                }
+            } else {
+                newCommandParts.push(commandParts[i]);
+            }
         }
+
+        commandParts = newCommandParts;
     };
 }
 
