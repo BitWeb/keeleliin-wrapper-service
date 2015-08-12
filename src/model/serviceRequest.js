@@ -8,7 +8,6 @@ function ServiceRequest( requestBody, requestFiles ) {
     this.files = requestFiles;
     var messages = null;
 
-
     this.isValid = function(){
         self._mapParams();
         self._checkFiles();
@@ -58,8 +57,7 @@ function ServiceRequest( requestBody, requestFiles ) {
     this._checkFiles = function () {
 
         for( var fileId in config.wrapper.requestConf.requestFiles ){
-            var file = this.files[fileId];
-            if(!file){
+            if(!self.files[fileId]){
                 self.setMessage(fileId, 'Nõutud faili ei saadetud');
             }
         }

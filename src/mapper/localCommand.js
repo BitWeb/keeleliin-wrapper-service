@@ -27,16 +27,17 @@ function LocalCommand( commandModel ) {
     this._parseParams = function () {
 
         for(index in this.templateParams){
-            this._parseOnIndex( index );
+
+            var propertyItem = this.templateParams[index];
+            var propertyKey = propertyItem.substr(1, (propertyItem.length - 2));
+            var value = keyValues[propertyKey];
+
+            if(!value){
+                throw new Error('Value not detected for property ' + propertyKey);
+            }
+
+            self._replacePropertyValue(propertyItem, value);
         }
-    };
-
-    this._parseOnIndex = function (index) {
-
-        var propertyItem = this.templateParams[index];
-        var propertyKey = propertyItem.substr(1, (propertyItem.length - 2));
-        var value = keyValues[propertyKey];
-        self._replacePropertyValue(propertyItem, value);
     };
 
     this._replacePropertyValue = function (propertyItem, value) {

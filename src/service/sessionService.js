@@ -49,23 +49,39 @@ function SessionService() {
 
     this._storeRequestFiles = function (session, files, cb) {
 
-        var tmpList = [];
-        for(var i in files){
-            tmpList.push(files[i]);
+        if(!files){
+            cb();
         }
 
         async.eachSeries(
-            tmpList,
+            files,
             function (item, callback) {
 
-                var tmpFile = item;
-                var sessionFilePath = self.getNewFilePath(session.id);
+                if(Array.isArray(item)){
 
-                FileUtil.mv(tmpFile.path, sessionFilePath, function(err){
-                    if(err) return callback(err);
-                    session.requestFiles[tmpFile.fieldname] = sessionFilePath;
-                    callback();
-                });
+                    async.eachSeries(item, function (itemFile, innerCallback) {
+                        var tmpFile = itemFile;
+                        var sessionFilePath = self.getNewFilePath(session.id);
+                        FileUtil.mv(tmpFile.path, sessionFilePath, function(err){
+                            if(err) return callback(err);
+                            if(session.requestFiles[tmpFile.fieldname] == undefined){
+                                session.requestFiles[tmpFile.fieldname] = []
+                            }
+                            session.requestFiles[tmpFile.fieldname].push( sessionFilePath );
+                            innerCallback();
+                        });
+                    }, function (err) {
+                        callback(err);
+                    });
+                } else {
+                    var tmpFile = item;
+                    var sessionFilePath = self.getNewFilePath(session.id);
+                    FileUtil.mv(tmpFile.path, sessionFilePath, function(err){
+                        if(err) return callback(err);
+                        session.requestFiles[tmpFile.fieldname] = sessionFilePath;
+                        callback();
+                    });
+                }
             },
             function ( err ) {
                 cb(err);

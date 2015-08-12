@@ -26,7 +26,6 @@ function LocalExecutor() {
 
         logger.debug(localCommand.command);
         logger.debug(localCommand.commandParams);
-        logger.debug(response);
 
         try {
             var process = spawn(command, commandParams);
@@ -53,6 +52,15 @@ function LocalExecutor() {
             logger.error('Got error: ' + data);
             response.isSuccess = false;
             response.errors.push({util:data.toString()});
+        });
+
+        process.on('exit', function (code, signal) {
+            logger.error('Child process EXIT due to receipt of signal: ' + signal + ' code: ' + code);
+
+            if(code && code > 0){
+                response.isSuccess = false;
+                process.kill();
+            }
         });
 
         process.on('close', function (code, signal) {

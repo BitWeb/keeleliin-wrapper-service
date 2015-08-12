@@ -1,4 +1,4 @@
-var logger = require('log4js').getLogger('wrapper');
+var logger = require('log4js').getLogger('simple_local_command_wrapper');
 var config = require('./../config');
 var localExecutor = require('./../src/service/executor/localExecutor');
 var Session = require('../src/model/session');
@@ -16,7 +16,10 @@ function SimpleLocalCommand(){
 
         self.getCommandModel(session, function (err, model) {
             logger.debug('GetCommandModel callback');
-            if(err) return callback(err);
+            if(err){
+                logger.error(err);
+                return callback(err);
+            }
 
             localExecutor.execute( model, function ( err, response ) {
                 if(err) return callback(err);
@@ -44,7 +47,8 @@ function SimpleLocalCommand(){
         var model = new CommandModel();
         model.serviceProperties.commandTemplate = config.wrapper.command.commandTemplate;
         model.init( session );
-        model.setTextValue('data', session.requestFiles.content);
+        model.setTextValue('data', session.getFiles('content').join(' '));
+        //model.setTextValue('data', session.getFile('content'));
         model.render(function (err) {
             logger.debug('Render callback');
             callback(err, model);

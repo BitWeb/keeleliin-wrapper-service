@@ -25,6 +25,24 @@ Session.prototype.setErrors = function(errors, path){
     this.message = Session.messages.ERROR
 };
 
+Session.prototype.getFile = function( key ){
+    var fileValue = this.requestFiles[ key ];
+
+    if(Array.isArray(fileValue)){
+        return fileValue.pop();
+    }
+    return fileValue;
+};
+
+Session.prototype.getFiles = function( key ){
+    var fileValue = this.requestFiles[ key ];
+
+    if(Array.isArray(fileValue)){
+        return fileValue;
+    }
+    return [fileValue];
+};
+
 Session.messages = {
     RUNNING: 'RUNNING',
     OK: 'OK',
