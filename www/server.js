@@ -54,8 +54,16 @@ function startCluster( instanceCount, cb ){
             cluster.fork();
         }
 
-        cluster.on('exit', function(worker, code, signal) {
-            log4jsLogger.error('worker ' + worker.process.pid + ' died; Code: ' + code + '; Signal: ' + signal);
+        cluster.on('exit', function(deadWorker, code, signal) {
+            // Restart the worker
+            var worker = cluster.fork();
+            // Note the process IDs
+            var newPID = worker.process.pid;
+            var oldPID = deadWorker.process.pid;
+
+            // Log the event
+            log4jsLogger.error('worker ' + oldPID + ' died; Code: ' + code + '; Signal: ' + signal);
+            log4jsLogger.error('worker ' + newPID + ' born.');
         });
 
         cleanerService.init();
