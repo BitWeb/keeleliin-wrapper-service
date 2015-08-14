@@ -139,7 +139,7 @@ var simpleCommandRequest = {
 
 config.availableCommands = {
     TOKENIZER : {
-        commandTemplate: 'python /var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/tokenizer/tokenizer.py -i [data] -o [outputPath1]'
+        commandTemplate: 'python /var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/picoutils/tokenizer.py -i [data] -o [output]'
     },
     MORFANALYSAATOR : {
         commandTemplate: '/var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/./morfanalyzer.sh [data]'
@@ -161,6 +161,9 @@ config.availableCommands = {
     },
     CONCAT : {
         commandTemplate: 'cat [data]'
+    },
+    MORPH_TAGGER : {
+        commandTemplate: 'python /var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/picoutils/morph_tagger.py -i [data] -o [output]'
     }
 };
 
@@ -246,9 +249,9 @@ config.availableWappers = {
     },
     TOKENIZER : {
         title: 'Sõnestaja',
-        id: 's6n',
+        id: 'tok',
         port: 3008,
-        class: 'tokenizer',
+        class: 'inputOutputLocalCommand',
         command: config.availableCommands.TOKENIZER,
         requestConf: simpleCommandRequest
     },
@@ -258,6 +261,14 @@ config.availableWappers = {
         port: 3009,
         class: 'simpleLocalCommand',
         command: config.availableCommands.CONCAT,
+        requestConf: simpleCommandRequest
+    },
+    MORPH_TAGGER : {
+        title: 'Lihtne konkateneerija',
+        id: 'tag',
+        port: 3010,
+        class: 'inputOutputLocalCommand',
+        command: config.availableCommands.MORPH_TAGGER,
         requestConf: simpleCommandRequest
     }
 };
