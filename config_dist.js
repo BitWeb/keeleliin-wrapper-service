@@ -30,7 +30,9 @@ var config = require('./wrapper_configs/global');
     }
 });*/
 
-//config.wrapper = config.availableWappers.<WRAPPERKEY>; //eg config.wrapper = config.availableWappers.TOKENIZER;
+
+//config.serverUrl = 'http://dev.bitweb.ee';
+//config.wrapper = config.availableWrappers.<WRAPPERKEY>; //eg config.wrapper = config.availableWrappers.TOKENIZER;
 //config.wrapper.command.commandTemplate = 'python /home/priit/Programs/KEELELIIN/pyutil/tokenizer.py -i [data] -o [outputPath1]';
 //config.fs.storagePath = "/home/priit/wrapper";
 //config.fs.tmpPath = "/tmp/wrapper/";

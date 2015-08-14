@@ -6,6 +6,8 @@ config.redis = {
     port: 6379
 };
 
+config.serverUrl = 'http://dev.bitweb.ee';
+
 config.fs = {
     storagePath: "/var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/tmp",
     tmpPath: "/tmp/wrapper/"
@@ -18,11 +20,17 @@ config.paramUsageTypes = {
 };
 
 config.wrapper = {
+    id: null, // unique service identifier
     title: null,
+    description: '',
     port: null,
     class: null,
     command: null,
     requestConf: null
+};
+
+config.integration = {
+    installUrl: 'http://localhost:3000/api/v1/service/install'
 };
 
 config.log4js = {
@@ -116,6 +124,7 @@ config.log4js = {
 var simpleCommandRequest = {
     requestBodyTemplate: {
         isAsync: null
+        //key: null
     },
     requestBodyParamsMappings: {
         isAsync: {
@@ -127,14 +136,37 @@ var simpleCommandRequest = {
             allowEmpty: false,
             validator: function(value, request){ return true; }
         }
+        /**
+         *   , key: {
+            type: 'text',
+            usageType: config.paramUsageTypes.STRING,
+            filter: function(value){
+                return value == 1;
+            },
+            required: true,
+            allowEmpty: false,
+            validator: function(value, request){ return true; }
+        }
+         */
     },
     requestFiles: {
-        content: null
+        content: {
+            type: 'text',
+            sizeLimit: 0,
+            sizeUnit: 'byte',
+            isList: false
+        }
     },
     staticParams: {
         sessionMaxLifetime: 600,
         isAsync: undefined
-    }
+    },
+    outputTypes: [
+        {
+            type: 'text',
+            key: 'output'
+        }
+    ]
 };
 
 config.availableCommands = {
@@ -167,10 +199,11 @@ config.availableCommands = {
     }
 };
 
-config.availableWappers = {
+config.availableWrappers = {
 
     LAUSESTAJA : {
         title: 'Lausestaja',
+        description: '',
         id: 'lau',
         port: 3001,
         class: 'simpleLocalCommand',
@@ -179,6 +212,7 @@ config.availableWappers = {
     },
     MORFANALYSAATOR : {
         title: 'Morfoloogiline analüüs',
+        description: '',
         id: 'moa',
         port: 3002,
         class: 'simpleLocalCommand',
@@ -187,6 +221,7 @@ config.availableWappers = {
     },
     OSALAUSESTAJA : {
         title: 'Osalausestaja',
+        description: '',
         id: 'osl',
         port: 3003,
         class: 'simpleLocalCommand',
@@ -195,6 +230,7 @@ config.availableWappers = {
     },
     MORFYHESTAJA: {
         title: 'Morfoloogiline ühestamine (kitsenduste grammatika)',
+        description: '',
         id: 'moy',
         port: 3004,
         class: 'simpleLocalCommand',
@@ -203,6 +239,7 @@ config.availableWappers = {
     },
     PIND_SYN: {
         title: 'Pindsüntaktiline analüüs',
+        description: '',
         id: 'pia',
         port: 3005,
         class: 'simpleLocalCommand',
@@ -211,6 +248,7 @@ config.availableWappers = {
     },
     S6LT_SYN: {
         title: 'Sõltuvussüntaktiline analüüs (ja järeltöötlus)',
+        description: '',
         id: 's6a',
         port: 3006,
         class: 'simpleLocalCommand',
@@ -220,35 +258,49 @@ config.availableWappers = {
 
     ARCHIVE_EXTRACTOR: {
         title: 'Arhiivi lahtipakkija',
+        description: '',
         id: 'uzip',
         port: 3007,
         class: 'archiveExtractor',
         requestConf: {
             requestBodyTemplate: {
-                //isAsync: null
+                isAsync: null
             },
             requestBodyParamsMappings: {
-                //isAsync: {
-                //    usageType: config.paramUsageTypes.META,
-                //    filter: function(value){
-                //        return value == 1;
-                //    },
-                //    required: true,
-                //    allowEmpty: false,
-                //    validator: function(value, request){ return true; }
-                //}
+                isAsync: {
+                    type: 'text',
+                    usageType: config.paramUsageTypes.META,
+                    filter: function(value){
+                        return value == 1;
+                    },
+                    required: true,
+                    allowEmpty: false,
+                    validator: function(value, request){ return true; }
+                }
             },
             requestFiles: {
-                content: null
+                content: {
+                    type: 'zip',
+                    sizeLimit: 0,
+                    sizeUnit: 'byte',
+                    isList: false
+                }
             },
             staticParams: {
                 sessionMaxLifetime: 600,
                 isAsync: 0
             }
-        }
+        },
+        outputTypes: [
+            {
+                type: 'text',
+                key: 'output'
+            }
+        ]
     },
     TOKENIZER : {
         title: 'Sõnestaja pipe',
+        description: '',
         id: 'tok',
         port: 3008,
         class: 'inputOutputLocalCommand',
@@ -261,7 +313,52 @@ config.availableWappers = {
         port: 3009,
         class: 'simpleLocalCommand',
         command: config.availableCommands.CONCAT,
-        requestConf: simpleCommandRequest
+        requestConf: {
+            requestBodyTemplate: {
+                isAsync: null,
+                key: null
+            },
+            requestBodyParamsMappings: {
+                isAsync: {
+                    usageType: config.paramUsageTypes.META,
+                    filter: function (value) {
+                        return value == 1;
+                    },
+                    required: true,
+                    allowEmpty: false,
+                    validator: function (value, request) {
+                        return true;
+                    }
+                }, key: {
+                    type: 'text',
+                    usageType: config.paramUsageTypes.STRING,
+                    filter: function(value){
+                        return value == 1;
+                    },
+                    required: true,
+                    allowEmpty: false,
+                    validator: function(value, request){ return true; }
+                }
+            },
+            requestFiles: {
+                content: {
+                    type: 'text',
+                    sizeLimit: 0,
+                    sizeUnit: 'byte',
+                    isList: true
+                }
+            },
+            staticParams: {
+                sessionMaxLifetime: 600,
+                isAsync: undefined
+            },
+            outputTypes: [
+                {
+                    type: 'text',
+                    key: 'output'
+                }
+            ]
+        }
     },
     MORPH_TAGGER : {
         title: 'Morfoloogiline ühestaja pipe',

@@ -4,6 +4,7 @@ var router = express.Router();
 var ServiceRequest = require(__base + '/src/model/serviceRequest');
 var wrapperService = require(__base + '/src/service/wrapperService');
 var fs = require('fs');
+var installService = require(__base + '/src/service/integration/installService');
 
 router.post('/', function ( req, res ) {
 
@@ -65,6 +66,12 @@ router.get('/:sessionId/kill', function(req, res) {
             return res.status(404).send({errors: err});
         }
         res.send(data);
+    });
+});
+
+router.get('/install/external', function(req, res) {
+    installService.install(function(err, result) {
+        return res.send({errors: err, data: result});
     });
 });
 
