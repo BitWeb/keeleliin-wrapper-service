@@ -14,14 +14,14 @@ function SimpleLocalCommand(){
 
     this.process = function ( session, callback) {
 
-        self.getCommandModel(session, function (err, model) {
+        self._getCommandModel(session, function (err, model) {
             logger.debug('GetCommandModel callback');
             if(err){
                 logger.error(err);
                 return callback(err);
             }
 
-            localExecutor.execute( model, function ( err, response ) {
+            localExecutor.execute( model, session, function ( err, response ) {
                 if(err) return callback(err);
                 logger.debug('Program is finished');
 
@@ -43,7 +43,7 @@ function SimpleLocalCommand(){
         });
     };
 
-    this.getCommandModel = function (session, callback) {
+    this._getCommandModel = function (session, callback) {
         var model = new CommandModel();
         model.serviceProperties.commandTemplate = config.wrapper.command.commandTemplate;
         model.init( session );
@@ -52,7 +52,9 @@ function SimpleLocalCommand(){
             logger.debug('Render callback');
             callback(err, model);
         });
-    }
+    };
+
+    this.kill = localExecutor.kill;
 }
 
 module.exports = SimpleLocalCommand;

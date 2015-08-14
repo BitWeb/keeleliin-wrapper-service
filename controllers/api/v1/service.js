@@ -33,7 +33,7 @@ router.get('/:sessionId', function(req, res) {
     });
 });
 
-router.get('/:sessionId/:fileId', function(req, res) {
+router.get('/:sessionId/download/:fileId', function(req, res) {
 
     logger.debug({request:'Get file', instance: req.params.sessionId, file: req.params.fileId});
 
@@ -56,6 +56,15 @@ router.get('/:sessionId/:fileId', function(req, res) {
         readStream.on('error', function(err) {
             res.end(err);
         });
+    });
+});
+
+router.get('/:sessionId/kill', function(req, res) {
+    wrapperService.kill(req.params.sessionId, function (err, data) {
+        if(err){
+            return res.status(404).send({errors: err});
+        }
+        res.send(data);
     });
 });
 

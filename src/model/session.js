@@ -13,13 +13,14 @@ var Session = function( id ){
     this.data = null;
     this.outputFiles = {};
     this.errors = null;
+    this.pid = null; //system process id
 };
 
 Session.prototype.addOutputFile = function(key, path){
     this.outputFiles[key] = path;
 };
 
-Session.prototype.setErrors = function(errors, path){
+Session.prototype.setErrors = function(errors){
     this.errors = errors;
     this.isSuccess = false;
     this.message = Session.messages.ERROR

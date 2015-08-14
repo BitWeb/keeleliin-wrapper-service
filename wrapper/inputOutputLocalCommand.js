@@ -22,11 +22,11 @@ function InputOutputLocalCommand(){
                 return callback( err, session );
             }
 
-            self.getCommandModel(session, function (err, model) {
+            self._getCommandModel(session, function (err, model) {
                 logger.debug('getCommandModel callback');
                 if(err) return callback(err);
 
-                localExecutor.execute( model, function ( err, response ) {
+                localExecutor.execute( model, session, function ( err, response ) {
 
                     if(err) return callback(err);
                     logger.debug('Program is finished');
@@ -50,7 +50,7 @@ function InputOutputLocalCommand(){
         });
     };
 
-    this.getCommandModel = function (session, callback) {
+    this._getCommandModel = function (session, callback) {
         var model = new CommandModel();
 
         model.serviceProperties.commandTemplate = config.wrapper.command.commandTemplate;
@@ -61,7 +61,9 @@ function InputOutputLocalCommand(){
             logger.debug('Render callback');
             callback(err, model);
         });
-    }
+    };
+
+    this.kill = localExecutor.kill;
 }
 
 module.exports = InputOutputLocalCommand;

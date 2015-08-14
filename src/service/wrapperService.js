@@ -57,6 +57,41 @@ function WrapperService() {
             callback(null, outputFile);
         });
     };
+
+    this.kill = function ( sessionId , callback) {
+
+        var mapResponse = function (err, message) {
+            var data = {};
+            data.sessionId = sessionId;
+            if(err){
+                data.success = false;
+                data.message = err;
+            } else {
+                data.success = true;
+                data.message = message;
+            }
+
+            var response = {
+                response: data
+            };
+
+            return response;
+        };
+
+        sessionService.getSession(sessionId, function (err, session) {
+            if(err){
+                return callback(err);
+            }
+            var processor = new Processor();
+            if(processor.kill != undefined){
+                processor.kill( session, function (err, response) {
+                    callback(null, mapResponse(err, response));
+                });
+            } else {
+                callback(null, mapResponse('Teenusele ei ole katkestamise meetodit implementeeritud'));
+            }
+        });
+    };
 }
 
 module.exports = new WrapperService();
