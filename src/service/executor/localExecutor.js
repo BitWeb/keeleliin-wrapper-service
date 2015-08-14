@@ -55,7 +55,7 @@ function LocalExecutor() {
         });
 
         process.on('exit', function (code, signal) {
-            logger.error('Child process EXIT due to receipt of signal: ' + signal + ' code: ' + code);
+            logger.debug('Child process EXIT due to receipt of signal: ' + signal + ' code: ' + code);
 
             if(code && code > 0){
                 response.isSuccess = false;
