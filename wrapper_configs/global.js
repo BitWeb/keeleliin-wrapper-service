@@ -248,7 +248,7 @@ config.availableWappers = {
         }
     },
     TOKENIZER : {
-        title: 'Sõnestaja',
+        title: 'Sõnestaja pipe',
         id: 'tok',
         port: 3008,
         class: 'inputOutputLocalCommand',
@@ -264,7 +264,7 @@ config.availableWappers = {
         requestConf: simpleCommandRequest
     },
     MORPH_TAGGER : {
-        title: 'Lihtne konkateneerija',
+        title: 'Morfoloogiline ühestaja pipe',
         id: 'tag',
         port: 3010,
         class: 'inputOutputLocalCommand',
