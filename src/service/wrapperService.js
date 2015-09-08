@@ -88,7 +88,10 @@ function WrapperService() {
                     callback(null, mapResponse(err, response));
                 });
             } else {
-                callback(null, mapResponse('Teenusele ei ole katkestamise meetodit implementeeritud'));
+                session.setErrors({util:' Utiliidi töö katkestati!'});
+                sessionService.saveSession(session, function (err, session) {
+                    callback(null, mapResponse('Teenusele ei ole katkestamise meetodit implementeeritud'));
+                });
             }
         });
     };

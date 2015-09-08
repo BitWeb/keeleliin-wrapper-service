@@ -155,7 +155,7 @@ function ArchiveExtractor() {
                     return callback(null, session);
                 });
             });
-    }
+    };
 }
 
 module.exports = ArchiveExtractor;
