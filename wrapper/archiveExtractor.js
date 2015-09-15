@@ -74,7 +74,7 @@ function ArchiveExtractor() {
 
                 mkdirp(directory, function(err) {
                     if (err) {
-                        // log err
+                        logger.error(err);
                         session.setErrors(err);
                         return callback(err, session);
                     }
@@ -95,6 +95,9 @@ function ArchiveExtractor() {
                             checkForCallback();
                         });
                     } else {
+                        logger.debug('Not file and not text or binary on count: ' + count);
+                        count = count - 1;
+                        checkForCallback();
                         entry.autodrain();
                     }
                 });
