@@ -38,12 +38,12 @@ function ArchiveExtractor() {
 
     this._extractZipFile = function(file, session, callback) {
         var count = 0;
+        var isClosed = false;
 
         logger.debug('Extracting *.zip file');
 
-
         var checkForCallback = function () {
-            if (count == 0) {
+            if (count == 0 && isClosed) {
                 session.message = Session.messages.OK;
                 return callback(null, session);
             }
@@ -97,6 +97,7 @@ function ArchiveExtractor() {
             })
             .on('close', function() {
                 logger.debug('Close count: ' + count);
+                isClosed = true;
                 checkForCallback();
             });
     };
