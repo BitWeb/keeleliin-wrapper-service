@@ -71,6 +71,7 @@ function ArchiveExtractor() {
                         //logger.debug('Filepath: ' + filePath);
                         entry.pipe(fs.createWriteStream(filePath)).on('close', function() {
                             session.addOutputFile(uniqid, {
+                                type: 'output',
                                 filePath: filePath,
                                 fileName: entry.path,
                                 contentType: mime.lookup(fullpath) // getting the original file mime type
