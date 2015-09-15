@@ -60,10 +60,6 @@ function ArchiveExtractor() {
             .on('entry', function(entry) {
 
                 var isFile = ('File' == entry.type);
-                if (isFile) {
-                    count++;
-                }
-
                 var savePath = SessionService.getStorePath(session.id);
                 var fullpath = path.join(savePath, entry.path);
                 logger.debug('Fullpath: ' + fullpath);
