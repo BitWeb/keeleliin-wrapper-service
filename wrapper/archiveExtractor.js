@@ -43,7 +43,10 @@ function ArchiveExtractor() {
         logger.debug('Extracting *.zip file');
 
         var checkForCallback = function () {
-            if (count == 0 && isClosed) {
+
+            logger.debug('Check for callback. count:' + count + ' isClosed: ' + isClosed);
+
+            if (count == 0 && isClosed == true) {
                 session.message = Session.messages.OK;
                 return callback(null, session);
             }
@@ -87,7 +90,7 @@ function ArchiveExtractor() {
                                 fileName: entry.path,
                                 contentType: mime.lookup(fullpath) // getting the original file mime type
                             });
-                            count--;
+                            count = count - 1;
                             checkForCallback();
                         });
                     } else {
@@ -101,6 +104,11 @@ function ArchiveExtractor() {
                 checkForCallback();
             });
     };
+
+
+
+
+
 
     this._extractGzipFile = function(file, session, callback) {
 
