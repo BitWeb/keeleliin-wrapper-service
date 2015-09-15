@@ -41,20 +41,31 @@ function ArchiveExtractor() {
 
         logger.debug('Extracting *.zip file');
 
+
+        var checkForCallback = function () {
+            if (count == 0) {
+                session.message = Session.messages.OK;
+                return callback(null, session);
+            }
+        };
+
         fs.createReadStream(file).on('error', function(error) {
             session.setErrors(error);
             return callback(error, session);
         })
             .pipe(unzip.Parse())
             .on('entry', function(entry) {
-                var savePath = SessionService.getStorePath(session.id);
+
                 var isFile = ('File' == entry.type);
-                var fullpath = path.join(savePath, entry.path);
-                //logger.debug('Fullpath: ' + fullpath);
-                var directory = (isFile ? path.dirname(fullpath) : fullpath);
                 if (isFile) {
                     count++;
                 }
+
+                var savePath = SessionService.getStorePath(session.id);
+                var fullpath = path.join(savePath, entry.path);
+                logger.debug('Fullpath: ' + fullpath);
+                var directory = (isFile ? path.dirname(fullpath) : fullpath);
+
 
                 logger.debug('Countx: ' + count);
 
@@ -77,10 +88,7 @@ function ArchiveExtractor() {
                                 contentType: mime.lookup(fullpath) // getting the original file mime type
                             });
                             count--;
-                            //logger.debug('Countx: ' + count);
-                            if (count == 0) {
-                                session.message = Session.messages.OK;
-                            }
+                            checkForCallback();
                         });
                     } else {
                         entry.autodrain();
@@ -89,11 +97,7 @@ function ArchiveExtractor() {
             })
             .on('close', function() {
                 logger.debug('Close count: ' + count);
-
-                if (count == 0) {
-                    session.message =  Session.messages.OK;
-                }
-                return callback(null, session);
+                checkForCallback();
             });
     };
 
