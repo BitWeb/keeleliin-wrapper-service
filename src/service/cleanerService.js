@@ -29,8 +29,7 @@ var CleanerService = function () {
         var folder = config.fs.storagePath;
 
         fs.readdir(folder, function(err, files) {
-            console.log('readFolder');
-
+            logger.debug('readFolder');
             if(files != undefined && files.length > 0){
                 self.checkOnIndex(0, files, folder, function (err) {
                     if(err){

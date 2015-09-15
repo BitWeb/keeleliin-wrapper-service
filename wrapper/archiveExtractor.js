@@ -66,7 +66,6 @@ function ArchiveExtractor() {
                 logger.debug('Fullpath: ' + fullpath);
                 var directory = (isFile ? path.dirname(fullpath) : fullpath);
 
-
                 logger.debug('Countx: ' + count);
 
                 mkdirp(directory, function(err) {
@@ -105,11 +104,6 @@ function ArchiveExtractor() {
                 checkForCallback();
             });
     };
-
-
-
-
-
 
     this._extractGzipFile = function(file, session, callback) {
 

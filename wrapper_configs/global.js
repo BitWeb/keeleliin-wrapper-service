@@ -35,49 +35,41 @@ config.integration = {
 
 config.log4js = {
     appenders: [
-        { type: 'console',
-            layout: {
-                type: 'pattern',
-                pattern: "[%d] %[[%x{port}-%x{pid}][%5.5p]%] %c - %m",
-                tokens: {
-                    pid: process.pid,
-                    port: function () {
-                       return config.wrapper.port;
+        {
+            "type": "logLevelFilter",
+            "level": "ERROR",
+            "appender": {
+                type: 'console',
+                layout: {
+                    type: 'pattern',
+                    pattern: "[%d] %[[%x{port}-%x{pid}][%5.5p]%] %c - %m",
+                    tokens: {
+                        pid: process.pid,
+                        port: function () {
+                            return config.wrapper.port;
+                        }
                     }
                 }
             }
         },
-        { type: 'file',
-            filename: __dirname + '/../wrapper.log'
-        }/*,
-        { // Error reporting
+        {
             "type": "logLevelFilter",
             "level": "ERROR",
             "appender": {
-                "type": "smtp",
-                 "layout": {
-                     type: 'pattern',
-                     pattern: "[%d] [%x{port}-%x{pid}][%5.5p] %c - %m",
-                     tokens: {
-                             pid: process.pid,
-                             port: config.port
-                         }
-                 },
-                "recipients": "**********",
-                "sendInterval": 10, //sec
-                "transport": "SMTP",
-                "SMTP": {
-                    "host": "smtp.gmail.com",
-                    "secureConnection": false,
-                    "port": 587,
-                    "auth": {
-                        "user": "***********",
-                        "pass": "***********"
-                    },
-                    "debug": true
+                type: 'file',
+                filename: __dirname + '/../wrapper.log',
+                layout: {
+                    type: 'pattern',
+                    pattern: "[%d] %[[%x{port}-%x{pid}][%5.5p]%] %c - %m",
+                    tokens: {
+                        pid: process.pid,
+                        port: function () {
+                            return config.wrapper.port;
+                        }
+                    }
                 }
             }
-        }*/
+        }
     ]
 };
 
