@@ -39,7 +39,7 @@ function ArchiveExtractor() {
     this._extractZipFile = function(file, session, callback) {
         var count = 0;
 
-        //logger.debug('Extracting *.zip file');
+        logger.debug('Extracting *.zip file');
 
         fs.createReadStream(file).on('error', function(error) {
             session.setErrors(error);
@@ -99,7 +99,7 @@ function ArchiveExtractor() {
 
     this._extractGzipFile = function(file, session, callback) {
 
-        //logger.debug('Extracting *.tar.gz file');
+        logger.debug('Extracting *.tar.gz file');
 
         var savePath = SessionService.getStorePath(session.id);
         fs.createReadStream(file).pipe(zlib.Unzip())
@@ -116,6 +116,7 @@ function ArchiveExtractor() {
                         var filePath = files[i];
                         var fileName = files[i].substring(filePath.indexOf(session.id) + session.id.length + 1);
                         session.addOutputFile(uniqid, {
+                            type: 'output',
                             filePath: filePath,
                             fileName: fileName,
                             contentType: mime.lookup(filePath) // getting the original file mime type
@@ -129,7 +130,7 @@ function ArchiveExtractor() {
 
     this._extractTarFile = function(file, session, callback) {
 
-        //logger.debug('Extracting *.tar file');
+        logger.debug('Extracting *.tar file');
 
         var savePath = SessionService.getStorePath(session.id);
         fs.createReadStream(file)
@@ -146,9 +147,9 @@ function ArchiveExtractor() {
                         var filePath = files[i];
                         var fileName = files[i].substring(filePath.indexOf(session.id) + session.id.length + 1);
                         session.addOutputFile(uniqid, {
+                            type: 'output',
                             filePath: filePath,
                             fileName: fileName,
-                            type: 'output',
                             contentType: mime.lookup(filePath) // getting the original file mime type
                         });
                     }
