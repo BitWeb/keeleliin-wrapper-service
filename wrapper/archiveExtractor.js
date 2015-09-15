@@ -56,7 +56,7 @@ function ArchiveExtractor() {
                     count++;
                 }
 
-                //logger.debug('Countx: ' + count);
+                logger.debug('Countx: ' + count);
 
                 mkdirp(directory, function(err) {
                     if (err) {
@@ -68,7 +68,7 @@ function ArchiveExtractor() {
                     if (isFile && isTextOrBinary.isTextSync(entry.path)) {
                         var uniqid = randomstring.generate(10);
                         var filePath = path.join(directory, uniqid);
-                        //logger.debug('Filepath: ' + filePath);
+                        logger.debug('Filepath: ' + filePath);
                         entry.pipe(fs.createWriteStream(filePath)).on('close', function() {
                             session.addOutputFile(uniqid, {
                                 type: 'output',
@@ -88,7 +88,7 @@ function ArchiveExtractor() {
                 });
             })
             .on('close', function() {
-                //logger.debug('Count: ' + count);
+                logger.debug('Close count: ' + count);
 
                 if (count == 0) {
                     session.message =  Session.messages.OK;
