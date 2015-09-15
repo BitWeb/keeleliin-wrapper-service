@@ -27,12 +27,9 @@ function SessionService() {
             }
 
             var session = new Session(sessionData.id);
-
-            logger.error('Session data: ', sessionData);
             for(i in sessionData){
                 session[i] = sessionData[i];
             }
-
             callback(null, session);
         });
     };
