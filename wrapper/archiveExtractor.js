@@ -91,6 +91,7 @@ function ArchiveExtractor() {
                                 contentType: mime.lookup(fullpath) // getting the original file mime type
                             });
                             count = count - 1;
+                            logger.debug('Close write on count: ' + count);
                             checkForCallback();
                         });
                     } else {
