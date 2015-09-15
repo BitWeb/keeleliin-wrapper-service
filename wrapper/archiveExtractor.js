@@ -157,6 +157,11 @@ function ArchiveExtractor() {
                 });
             });
     };
+
+    this.kill = function (session, callback) {
+        logger.debug('Kill system process');
+        callback(null, 'Katkestamise signaal saadetud');
+    };
 }
 
 module.exports = ArchiveExtractor;

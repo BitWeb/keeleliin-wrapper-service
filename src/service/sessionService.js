@@ -17,12 +17,22 @@ function SessionService() {
 
     this.getSession = function (sessionId, callback) {
 
-        daoService.get(sessionId, function (err, session) {
-            if(err) return callback(err);
-            if(session == null){
+        daoService.get(sessionId, function (err, sessionData) {
+            if(err) {
+                return callback(err);
+            }
+            if(sessionData == null){
                 logger.debug('Session not found: ' + sessionId);
                 return callback('Sessiooni ei leitud');
             }
+
+            var session = new Session(sessionData.id);
+
+            logger.error('Session data: ', sessionData);
+            for(i in sessionData){
+                session[i] = sessionData[i];
+            }
+
             callback(null, session);
         });
     };
