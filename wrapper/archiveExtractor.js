@@ -58,8 +58,9 @@ function ArchiveExtractor() {
         })
             .pipe(unzip.Parse())
             .on('entry', function(entry) {
-
+                count++;
                 var isFile = ('File' == entry.type);
+
                 var savePath = SessionService.getStorePath(session.id);
                 var fullpath = path.join(savePath, entry.path);
                 logger.debug('Fullpath: ' + fullpath);
