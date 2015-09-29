@@ -7,10 +7,10 @@ config.redis = {
 };
 
 
-config.serverUrl = 'http://localhost';
+config.serverUrl = 'http://dev.bitweb.ee';
 
 config.integration = {
-    installUrl: 'http://dev.bitweb.ee:8000/api/v1/service/install',
+    installUrl: 'http://dev.bitweb.ee:3000/api/v1/service/install',
     apiKey: 'server-wrapper-api-key'
 };
 
