@@ -24,6 +24,8 @@ var errorhandlerMiddleware = require('./../middlewares/errorhandler');
 var ServerUtil = require('./../src/util/server');
 var cleanerService = require('./../src/service/cleanerService');
 
+var installService = require('./../src/service/integration/installService');
+
 app.set('views', path.join(__base, 'views'));// view engine setup
 app.set('view engine', 'jade');// view engine setup
 app.use(express.static(__base + '/public'));
@@ -32,8 +34,15 @@ log4js.configure(config.log4js);
 var log4jsLogger = log4js.getLogger('wrapper_server_js');
 
 app.use(logger('dev'));
-app.use(bodyParser.json({limit: '1000mb'})); // for parsing application/json
-app.use(multer({ dest: config.fs.tmpPath})); // for parsing multipart/form-data
+app.use(bodyParser.json({limit: '1mb'})); // for parsing application/json
+app.use(multer({
+    dest: config.fs.tmpPath,
+    /*limits: { fileSize: 1* 1024 * 1024}, //1mb
+    onFileUploadStart: function (file, req, res) {
+        console.error(file.fieldname + ' fileupload is starting ...', file);
+    }*/
+
+})); // for parsing multipart/form-data
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(routerMiddleware.routeLogger);
 app.use(controllers);
@@ -67,6 +76,9 @@ function startCluster( instanceCount, cb ){
         });
 
         cleanerService.init();
+        installService.install(function () {
+            log4jsLogger.error('Instal callback');
+        })
     } else {
         startInstance(cb)
     }

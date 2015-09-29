@@ -6,7 +6,13 @@ config.redis = {
     port: 6379
 };
 
-config.serverUrl = 'http://dev.bitweb.ee';
+
+config.serverUrl = 'http://localhost';
+
+config.integration = {
+    installUrl: 'http://dev.bitweb.ee:8000/api/v1/service/install',
+    apiKey: 'server-wrapper-api-key'
+};
 
 config.fs = {
     storagePath: "/var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/tmp",
@@ -27,10 +33,6 @@ config.wrapper = {
     class: null,
     command: null,
     requestConf: null
-};
-
-config.integration = {
-    installUrl: 'http://localhost:3000/api/v1/service/install'
 };
 
 config.log4js = {
@@ -120,13 +122,17 @@ var simpleCommandRequest = {
     },
     requestBodyParamsMappings: {
         isAsync: {
+            type: 'select',
+            options: ['0','1'],
             usageType: config.paramUsageTypes.META,
-            filter: function(value){
+            filter: function (value) {
                 return value == 1;
             },
             required: true,
             allowEmpty: false,
-            validator: function(value, request){ return true; }
+            validator: function (value, request) {
+                return true;
+            }
         }
         /**
          *   , key: {
@@ -200,7 +206,8 @@ config.availableWrappers = {
         port: 3001,
         class: 'simpleLocalCommand',
         command: config.availableCommands.LAUSESTAJA,
-        requestConf: simpleCommandRequest
+        requestConf: simpleCommandRequest,
+        outputTypes: [ { type: 'text', key: 'output' }]
     },
     MORFANALYSAATOR : {
         title: 'Morfoloogiline analüüs',
@@ -209,7 +216,8 @@ config.availableWrappers = {
         port: 3002,
         class: 'simpleLocalCommand',
         command: config.availableCommands.MORFANALYSAATOR,
-        requestConf: simpleCommandRequest
+        requestConf: simpleCommandRequest,
+        outputTypes: [ { type: 'text', key: 'output' }]
     },
     OSALAUSESTAJA : {
         title: 'Osalausestaja',
@@ -218,7 +226,8 @@ config.availableWrappers = {
         port: 3003,
         class: 'simpleLocalCommand',
         command: config.availableCommands.OSALAUSESTAJA,
-        requestConf: simpleCommandRequest
+        requestConf: simpleCommandRequest,
+        outputTypes: [ { type: 'text', key: 'output' }]
     },
     MORFYHESTAJA: {
         title: 'Morfoloogiline ühestamine (kitsenduste grammatika)',
@@ -227,7 +236,8 @@ config.availableWrappers = {
         port: 3004,
         class: 'simpleLocalCommand',
         command: config.availableCommands.MORFYHESTAJA,
-        requestConf: simpleCommandRequest
+        requestConf: simpleCommandRequest,
+        outputTypes: [ { type: 'text', key: 'output' }]
     },
     PIND_SYN: {
         title: 'Pindsüntaktiline analüüs',
@@ -236,7 +246,8 @@ config.availableWrappers = {
         port: 3005,
         class: 'simpleLocalCommand',
         command: config.availableCommands.PIND_SYN,
-        requestConf: simpleCommandRequest
+        requestConf: simpleCommandRequest,
+        outputTypes: [ { type: 'text', key: 'output' }]
     },
     S6LT_SYN: {
         title: 'Sõltuvussüntaktiline analüüs (ja järeltöötlus)',
@@ -245,7 +256,8 @@ config.availableWrappers = {
         port: 3006,
         class: 'simpleLocalCommand',
         command: config.availableCommands.S6LT_SYN,
-        requestConf: simpleCommandRequest
+        requestConf: simpleCommandRequest,
+        outputTypes: [ { type: 'text', key: 'output' }]
     },
 
     ARCHIVE_EXTRACTOR: {
@@ -260,14 +272,17 @@ config.availableWrappers = {
             },
             requestBodyParamsMappings: {
                 isAsync: {
-                    type: 'text',
+                    type: 'select',
+                    options: ['0','1'],
                     usageType: config.paramUsageTypes.META,
-                    filter: function(value){
+                    filter: function (value) {
                         return value == 1;
                     },
                     required: true,
                     allowEmpty: false,
-                    validator: function(value, request){ return true; }
+                    validator: function (value, request) {
+                        return true;
+                    }
                 }
             },
             requestFiles: {
@@ -283,12 +298,7 @@ config.availableWrappers = {
                 isAsync: 0
             }
         },
-        outputTypes: [
-            {
-                type: 'text',
-                key: 'output'
-            }
-        ]
+        outputTypes: [ { type: 'text', key: 'output' }]
     },
     TOKENIZER : {
         title: 'Sõnestaja pipe',
@@ -297,7 +307,8 @@ config.availableWrappers = {
         port: 3008,
         class: 'inputOutputLocalCommand',
         command: config.availableCommands.TOKENIZER,
-        requestConf: simpleCommandRequest
+        requestConf: simpleCommandRequest,
+        outputTypes: [ { type: 'text', key: 'output' }]
     },
     CONCAT : {
         title: 'Lihtne konkateneerija',
@@ -312,6 +323,8 @@ config.availableWrappers = {
             },
             requestBodyParamsMappings: {
                 isAsync: {
+                    type: 'select',
+                    options: ['0','1'],
                     usageType: config.paramUsageTypes.META,
                     filter: function (value) {
                         return value == 1;
@@ -343,14 +356,9 @@ config.availableWrappers = {
             staticParams: {
                 sessionMaxLifetime: 600,
                 isAsync: undefined
-            },
-            outputTypes: [
-                {
-                    type: 'text',
-                    key: 'output'
-                }
-            ]
-        }
+            }
+        },
+        outputTypes: [ { type: 'text', key: 'output' }]
     },
     MORPH_TAGGER : {
         title: 'Morfoloogiline ühestaja pipe',
@@ -358,7 +366,8 @@ config.availableWrappers = {
         port: 3010,
         class: 'inputOutputLocalCommand',
         command: config.availableCommands.MORPH_TAGGER,
-        requestConf: simpleCommandRequest
+        requestConf: simpleCommandRequest,
+        outputTypes: [ { type: 'text', key: 'output' }]
     }
 };
 

@@ -7,32 +7,26 @@ var InstallService = function() {
     var self = this;
 
     this.install = function(cb) {
+
         var wrapper = config.wrapper;
+        var serviceConfig = self.getConfiguration();
+        serviceConfig.apiKey = config.integration.apiKey;
+
         request.post({
-            url: self._composeInstallUrl(config.integration.installUrl, wrapper.id, self._getApiKey()),
-            json: self.getConfiguration()
+            url: config.integration.installUrl,
+            json: serviceConfig
         }, function(error, response, body) {
+
+
+            logger.error('1 ',error);
+            logger.error('2 ',response);
+            logger.error('3 ',body);
+
             if (error) {
                 logger.error(error);
                 return cb(error);
             }
-            var data = {
-                errors: null,
-                data: null
-            };
 
-            if (body != undefined) {
-                if (body.errors) {
-                    data.errors = body.errors;
-                }
-                if (body.data) {
-                    data.data = body.data;
-                }
-            }
-
-            logger.debug(data);
-
-            return cb(data.errors, data.data);
         });
     };
 
@@ -44,7 +38,7 @@ var InstallService = function() {
             configuration.sid = wrapper.id;
             configuration.name = wrapper.title;
             configuration.description = wrapper.description;
-            configuration.url = self._composeUrl(config.serverUrl, wrapper.port);
+            configuration.url = config.serverUrl + ':' + wrapper.port + '/api/v1/';
             configuration.inputTypes = [];
             configuration.outputTypes = [];
 
@@ -72,14 +66,12 @@ var InstallService = function() {
             var requestBodyTemplate = wrapper.requestConf.requestBodyTemplate;
             for(var property in requestBodyTemplate){
                 if (requestBodyTemplate.hasOwnProperty(property)) {
-                    if (wrapper.requestConf.requestBodyParamsMappings[property].usageType != config.paramUsageTypes.META) {
-                        configuration.parameters.push({
-                            key: property,
-                            type: wrapper.requestConf.requestBodyParamsMappings[property].type,
-                            value: requestBodyTemplate[property]
-                        });
-                    }
-
+                    configuration.parameters.push({
+                        key: property,
+                        type: wrapper.requestConf.requestBodyParamsMappings[property].type,
+                        options: wrapper.requestConf.requestBodyParamsMappings[property].options,
+                        value: requestBodyTemplate[property]
+                    });
                 }
             }
         }
@@ -87,31 +79,6 @@ var InstallService = function() {
         return configuration;
     };
 
-    this._composeUrl = function(serverUrl, port) {
-
-        return serverUrl + (port ? ':' + port  : '') + '/api/v1/';
-    };
-
-    this._composeInstallUrl = function(installUrl, serviceId, apiKey) {
-
-        return installUrl + '/sid/' + serviceId + '/apiKey/' + apiKey;
-    };
-
-    // Gets API key as argv, i.e., "apiKey=somethingsomething"
-    this._getApiKey = function() {
-        var apiKey = '';
-        if (process.argv.length > 0) {
-            for (var i = 0; i < process.argv.length; i++) {
-                var arg = process.argv[i];
-                var s = 'apiKey';
-                if (arg.indexOf(s) > -1) {
-                    apiKey = arg.substring(s.length + 1);
-                }
-            }
-        }
-
-        return apiKey;
-    }
 };
 
 module.exports = new InstallService();

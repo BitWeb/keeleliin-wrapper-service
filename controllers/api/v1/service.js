@@ -6,6 +6,11 @@ var wrapperService = require(__base + '/src/service/wrapperService');
 var fs = require('fs');
 var installService = require(__base + '/src/service/integration/installService');
 
+router.get('/config', function(req, res) {
+    return res.send(installService.getConfiguration());
+});
+
+
 router.post('/', function ( req, res ) {
 
     logger.debug(req.body);
@@ -69,10 +74,6 @@ router.get('/:sessionId/kill', function(req, res) {
     });
 });
 
-router.get('/install/external', function(req, res) {
-    installService.install(function(err, result) {
-        return res.send({errors: err, data: result});
-    });
-});
+
 
 module.exports = router;
