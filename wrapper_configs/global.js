@@ -6,7 +6,6 @@ config.redis = {
     port: 6379
 };
 
-
 config.serverUrl = 'http://dev.bitweb.ee';
 
 config.integration = {

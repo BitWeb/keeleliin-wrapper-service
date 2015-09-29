@@ -16,17 +16,14 @@ var InstallService = function() {
             url: config.integration.installUrl,
             json: serviceConfig
         }, function(error, response, body) {
-
-
-            logger.error('1 ',error);
-            logger.error('2 ',response);
-            logger.error('3 ',body);
-
-            if (error) {
+            if(error){
+                logger.error(config.integration.installUrl);
+                logger.error(self.getConfiguration());
                 logger.error(error);
+
                 return cb(error);
             }
-
+            cb(null, true);
         });
     };
 
