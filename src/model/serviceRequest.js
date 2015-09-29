@@ -58,6 +58,7 @@ function ServiceRequest( requestBody, requestFiles ) {
 
         for( var fileId in config.wrapper.requestConf.requestFiles ){
             if(!self.files[fileId]){
+                logger.error('Nõutud faili ei saadetud' + fileId, self.files);
                 self.setMessage(fileId, 'Nõutud faili ei saadetud');
             }
         }
