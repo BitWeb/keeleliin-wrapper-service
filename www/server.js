@@ -76,9 +76,14 @@ function startCluster( instanceCount, cb ){
         });
 
         cleanerService.init();
-        installService.install(function () {
-            log4jsLogger.error('Instal callback');
-        })
+
+        //Lase serveril üles ärgata
+        setTimeout(function(){
+            installService.install(function () {
+                log4jsLogger.error('Instal callback');
+            })
+        }, 10000);
+
     } else {
         startInstance(cb)
     }
