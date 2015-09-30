@@ -60,16 +60,15 @@ var InstallService = function() {
             }
 
             configuration.parameters = [];
-            var requestBodyTemplate = wrapper.requestConf.requestBodyTemplate;
-            for(var property in requestBodyTemplate){
-                if (requestBodyTemplate.hasOwnProperty(property)) {
-                    configuration.parameters.push({
-                        key: property,
-                        type: wrapper.requestConf.requestBodyParamsMappings[property].type,
-                        options: wrapper.requestConf.requestBodyParamsMappings[property].options,
-                        value: requestBodyTemplate[property]
-                    });
-                }
+
+            for(var property in wrapper.requestConf.requestBodyParamsMappings){
+
+                configuration.parameters.push({
+                    key: property,
+                    type: wrapper.requestConf.requestBodyParamsMappings[property].type,
+                    options: wrapper.requestConf.requestBodyParamsMappings[property].options,
+                    value: wrapper.requestConf.requestBodyParamsMappings[property].value
+                });
             }
         }
 

@@ -24,29 +24,30 @@ function ServiceRequest( requestBody, requestFiles ) {
 
     this._mapParams = function(){
 
-        var staticParams = config.wrapper.requestConf.staticParams;
-
-        for(var property in config.wrapper.requestConf.requestBodyTemplate){
+        for(var property in config.wrapper.requestConf.requestBodyParamsMappings){
 
             var value = self.data[property];
 
             var mapping = config.wrapper.requestConf.requestBodyParamsMappings[property];
 
-            if(staticParams[property] != undefined){
-                value = staticParams[property];
-            }
-
             if(mapping.filter){
                 value = mapping.filter(value);
             }
+
             if(mapping.required == true && value == undefined){
                 self.setMessage(property, 'Väli on nõutud');
                 continue;
             }
+
             if(mapping.allowEmpty == false && (value === null || value === '') ){
                 self.setMessage(property, 'Väli on täitmata');
                 continue;
             }
+
+            if(!value){
+                value = mapping.value;
+            }
+
             if(mapping.validator){
                 mapping.validator(value, self);
             }

@@ -14,7 +14,7 @@ var CleanerService = function () {
     this.init = function(){
         logger.debug('init');
 
-        if(!config.wrapper.requestConf.staticParams.sessionMaxLifetime){
+        if(!config.wrapper.sessionMaxLifetime){
             return;
         }
 
@@ -74,7 +74,7 @@ var CleanerService = function () {
                     var timeModified = stat.mtime.getTime();
                     var currentTime = new Date().getTime();
 
-                    if(currentTime - timeModified > ( config.wrapper.requestConf.staticParams.sessionMaxLifetime * 1000 )){
+                    if(currentTime - timeModified > ( config.wrapper.sessionMaxLifetime * 1000 )){
                         sessionService.removeSession(file, function (err) {
                             if(err){
                                 logger.error('Session delete failed: ' + file);

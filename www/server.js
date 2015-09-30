@@ -80,7 +80,7 @@ function startCluster( instanceCount, cb ){
         //Lase serveril üles ärgata
         setTimeout(function(){
             installService.install(function () {
-                log4jsLogger.error('Instal callback');
+                log4jsLogger.trace('Instal callback');
             })
         }, 10000);
 
