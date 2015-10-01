@@ -82,7 +82,7 @@ function startCluster( instanceCount, cb ){
             installService.install(function () {
                 log4jsLogger.trace('Instal callback');
             })
-        }, Math.random() * 10000);
+        }, Math.random() * 20000);
 
     } else {
         startInstance(cb)
