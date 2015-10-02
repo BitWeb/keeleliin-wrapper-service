@@ -25,6 +25,7 @@
     "morgan": "~1.5.3",
     "multer": "0.1.6",
     "node-schedule": "^0.2.9",
+    "nodejs-disks": "^0.2.1",
     "nodemailer": "^1.4.0",
     "randomstring": "^1.0.5",
     "recursive-readdir": "^1.2.1",
