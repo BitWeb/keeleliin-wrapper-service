@@ -1,8 +1,8 @@
 var config = {};
 
 config.redis = {
-    host: "127.0.0.1",
-    port: 6379
+    host: process.env.REDIS_PORT_6379_TCP_ADDR || "127.0.0.1",
+    port: process.env.REDIS_PORT_6379_TCP_PORT || 6379
 };
 
 config.serverUrl = 'http://dev.bitweb.ee';
@@ -13,8 +13,8 @@ config.integration = {
 };
 
 config.fs = {
-    storagePath: "/var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/tmp",
-    tmpPath: "/tmp/wrapper/"
+    storagePath: "/wrapper/files",
+    tmpPath: "/wrapper/tmp"
 };
 
 config.paramUsageTypes = {
