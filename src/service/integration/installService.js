@@ -1,5 +1,6 @@
 var config = require('../../../config');
 var request = require('request');
+var async = require('async');
 var logger = require('log4js').getLogger('installService');
 
 var InstallService = function() {
@@ -10,20 +11,29 @@ var InstallService = function() {
 
         var wrapper = config.wrapper;
         var serviceConfig = self.getConfiguration();
-        serviceConfig.apiKey = config.integration.apiKey;
 
-        request.post({
-            url: config.integration.installUrl,
-            json: serviceConfig
-        }, function(error, response, body) {
-            if(error){
-                logger.error(config.integration.installUrl);
-                logger.error(self.getConfiguration());
-                logger.error(error);
+        async.each(config.integration, function (serverConf, innerCb) {
 
-                return cb(error);
-            }
-            cb(null, true);
+            logger.debug(serverConf);
+
+            serviceConfig.apiKey = serverConf.apiKey;
+            request.post({
+                url: serverConf.installUrl,
+                json: serviceConfig
+            }, function(error, response, body) {
+                if(error){
+                    logger.error( serverConf.installUrl);
+                    logger.error(self.getConfiguration());
+                    logger.error(error);
+
+                    return innerCb(error);
+                }
+                innerCb(null, true);
+            });
+
+        }, function (err) {
+            logger.debug('Installed');
+            cb(err, true)
         });
     };
 

@@ -7,10 +7,16 @@ config.redis = {
 
 config.serverUrl = 'http://dev.bitweb.ee';
 
-config.integration = {
-    installUrl: 'http://dev.bitweb.ee:3000/api/v1/service/install',
-    apiKey: 'server-wrapper-api-key'
-};
+config.integration = [
+    {
+        installUrl: 'http://dev.bitweb.ee:3000/api/v1/service/install',
+        apiKey: 'server-wrapper-api-key'
+    },
+    {
+        installUrl: 'http://keeleliin.keeleressursid.ee:3000/api/v1/service/install',
+        apiKey: 'server-wrapper-api-key'
+    }
+];
 
 config.fs = {
     storagePath: "/wrapper/files",
