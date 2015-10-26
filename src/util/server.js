@@ -1,6 +1,8 @@
 /**
  * Created by priit on 18.06.15.
  */
+var config = require('./../../config');
+var logger = require('log4js').getLogger('wrapper_server');
 
 var Server = {
 
@@ -17,6 +19,7 @@ var Server = {
 
     onError: function(error) {
         if (error.syscall !== 'listen') {
+            logger.error(config.wrapper);
             throw error;
         }
         // handle specific listen errors with friendly messages
