@@ -63,8 +63,8 @@ function LocalExecutor() {
 
         process.stderr.on('data', function (data) {
             logger.error('Got std error: ' + data);
-            response.isSuccess = false;
-            response.errors.push({util:data.toString()});
+            //response.isSuccess = false;
+            //response.errors.push({util:data.toString()});
         });
 
         process.on('error', function (data) {
