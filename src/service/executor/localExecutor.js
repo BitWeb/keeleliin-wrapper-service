@@ -62,13 +62,13 @@ function LocalExecutor() {
         process.stderr.pipe(outputStream);
 
         process.stderr.on('data', function (data) {
-            logger.error('Got error: ' + data);
+            logger.error('Got std error: ' + data);
             response.isSuccess = false;
             response.errors.push({util:data.toString()});
         });
 
         process.on('error', function (data) {
-            logger.error('Got error: ' + data);
+            logger.error('Got process error: ' + data);
             response.isSuccess = false;
             response.errors.push({util:data.toString()});
         });
