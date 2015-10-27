@@ -59,7 +59,7 @@ function LocalExecutor() {
 
         var outputStream = fs.createWriteStream(response.stdOutPath, {flags: 'a'});
         process.stdout.pipe(outputStream);
-        process.stderr.pipe(outputStream);
+        //process.stderr.pipe(outputStream);
 
         process.stderr.on('data', function (data) {
             logger.error('Got std error: ' + data);
