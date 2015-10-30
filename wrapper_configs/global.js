@@ -19,8 +19,8 @@ config.integration = [
 ];
 
 config.fs = {
-    storagePath: "/wrapper/files",
-    tmpPath: "/wrapper/tmp"
+    storagePath: "/files",
+    tmpPath: "/tmp"
 };
 
 config.paramUsageTypes = {
@@ -53,7 +53,7 @@ config.log4js = {
             "level": "ERROR",
             "appender": {
                 type: 'file',
-                filename: __dirname + '/../wrapper.log',
+                filename: '/logs/wrapper.log',
                 layout: {
                     type: 'pattern',
                     pattern: "[%d] %[[%x{port}-%x{pid}][%5.5p]%] %c - %m",
@@ -81,31 +81,31 @@ config.wrapper = {
 
 config.availableCommands = {
     TOKENIZER: {
-        commandTemplate: 'python /var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/picoutils/tokenizer.py -i [data] -o [output]'
+        commandTemplate: 'python /wrapper/utils/picoutils/tokenizer.py -i [data] -o [output]'
     },
     MORFANALYSAATOR: {
-        commandTemplate: '/var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/./morfanalyzer.sh [data]'
+        commandTemplate: '/wrapper/utils/./morfanalyzer.sh [data]'
     },
     LAUSESTAJA: {
-        commandTemplate: '/var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/./lausestaja.sh [data]'
+        commandTemplate: '/wrapper/utils/./lausestaja.sh [data]'
     },
     OSALAUSESTAJA: {
-        commandTemplate: '/var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/./osalausestaja.sh [data]'
+        commandTemplate: '/wrapper/utils/./osalausestaja.sh [data]'
     },
     MORFYHESTAJA: {
-        commandTemplate: '/var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/./morfyhestaja.sh [data]'
+        commandTemplate: '/wrapper/utils/./morfyhestaja.sh [data]'
     },
     PIND_SYN: {
-        commandTemplate: '/var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/./pindsyn.sh [data]'
+        commandTemplate: '/wrapper/utils/./pindsyn.sh [data]'
     },
     S6LT_SYN: {
-        commandTemplate: '/var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/./s6ltsyn.sh [data]'
+        commandTemplate: '/wrapper/utils/./s6ltsyn.sh [data]'
     },
     CONCAT: {
         commandTemplate: 'cat [data]'
     },
     MORPH_TAGGER: {
-        commandTemplate: 'python /var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/picoutils/morph_tagger.py -i [data] -o [output]'
+        commandTemplate: 'python /wrapper/utils/picoutils/morph_tagger.py -i [data] -o [output]'
     }
 };
 
@@ -154,7 +154,7 @@ config.availableWrappers = {
         title: 'Lausestaja',
         description: '',
         id: 'lau',
-        port: 3001,
+        port: process.env.SERVER_PORT || 3001,
         class: 'simpleLocalCommand',
         command: config.availableCommands.LAUSESTAJA,
         requestConf: {
@@ -182,7 +182,7 @@ config.availableWrappers = {
         title: 'Morfoloogiline analüüs',
         description: '',
         id: 'moa',
-        port: 3002,
+        port: process.env.SERVER_PORT || 3002,
         class: 'simpleLocalCommand',
         command: config.availableCommands.MORFANALYSAATOR,
         requestConf: {
@@ -210,7 +210,7 @@ config.availableWrappers = {
         title: 'Osalausestaja',
         description: '',
         id: 'osl',
-        port: 3003,
+        port: process.env.SERVER_PORT || 3003,
         class: 'simpleLocalCommand',
         command: config.availableCommands.OSALAUSESTAJA,
         requestConf: {
@@ -238,7 +238,7 @@ config.availableWrappers = {
         title: 'Morfoloogiline ühestamine (kitsenduste grammatika)',
         description: '',
         id: 'moy',
-        port: 3004,
+        port: process.env.SERVER_PORT || 3004,
         class: 'simpleLocalCommand',
         command: config.availableCommands.MORFYHESTAJA,
         requestConf: {
@@ -266,7 +266,7 @@ config.availableWrappers = {
         title: 'Pindsüntaktiline analüüs',
         description: '',
         id: 'pia',
-        port: 3005,
+        port: process.env.SERVER_PORT || 3005,
         class: 'simpleLocalCommand',
         command: config.availableCommands.PIND_SYN,
         requestConf: {
@@ -294,7 +294,7 @@ config.availableWrappers = {
         title: 'Sõltuvussüntaktiline analüüs (ja järeltöötlus)',
         description: '',
         id: 's6a',
-        port: 3006,
+        port: process.env.SERVER_PORT || 3006,
         class: 'simpleLocalCommand',
         command: config.availableCommands.S6LT_SYN,
         requestConf: {
@@ -323,7 +323,7 @@ config.availableWrappers = {
         title: 'Arhiivi lahtipakkija',
         description: '',
         id: 'uzip',
-        port: 3007,
+        port: process.env.SERVER_PORT || 3007,
         class: 'archiveExtractor',
         requestConf: {
             requestBodyParamsMappings: {
@@ -350,7 +350,7 @@ config.availableWrappers = {
         title: 'Sõnestaja pipe',
         description: '',
         id: 'tok',
-        port: 3008,
+        port: process.env.SERVER_PORT || 3008,
         class: 'inputOutputLocalCommand',
         command: config.availableCommands.TOKENIZER,
         requestConf: {
@@ -377,7 +377,7 @@ config.availableWrappers = {
     CONCAT: {
         title: 'Lihtne konkateneerija',
         id: 'concat',
-        port: 3009,
+        port: process.env.SERVER_PORT || 3009,
         class: 'simpleLocalCommand',
         command: config.availableCommands.CONCAT,
         requestConf: {
@@ -404,7 +404,7 @@ config.availableWrappers = {
     MORPH_TAGGER: {
         title: 'Morfoloogiline ühestaja pipe',
         id: 'tag',
-        port: 3010,
+        port: process.env.SERVER_PORT || 3010,
         class: 'inputOutputLocalCommand',
         command: config.availableCommands.MORPH_TAGGER,
         requestConf: {
