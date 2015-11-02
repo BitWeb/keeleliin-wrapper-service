@@ -1,6 +1,16 @@
-FROM    ubuntu:14.04
+#   docker build -t kl_lausestaja .
+#
+#   docker run --name kl_redis --rm --restart=no redis
+#
+#   docker run kl_lausestaja --name kl_lausestaja --link kl_redis:redis -v /wrapper/lausestaja/config:/config kl_lausestaja
+#
+#   docker kill kl_lausestaja
+#
+#   docker rm kl_lausestaja
+#
+#
 
-MAINTAINER priit@bitweb.ee
+FROM    ubuntu:14.04
 
 ENV TERM xterm
 ENV WRAPPER=LAUSESTAJA
@@ -11,17 +21,18 @@ RUN apt-get update && \
     apt-get -y install curl && \
     curl -sL https://deb.nodesource.com/setup | sudo bash - && \
     apt-get -y install python build-essential nodejs && \
-    apt-get -y install git
-
-RUN apt-get install unzip
+    apt-get -y install git && \
+    apt-get -y install unzip
 
 RUN npm install -g forever
 
-RUN mkdir -p /tmp && mkdir -p /files && mkdir -p /logs && mkdir -p /config
-
 RUN mkdir -p /src
+RUN mkdir -p /tmp
+RUN mkdir -p /files
+RUN mkdir -p /logs
+RUN mkdir -p /config
 
-RUN cd /src && git clone 'https://github.com/BitWeb/keeleliin-server.git' . && npm install && echo "Run is Done 2.2"
+RUN cd /src && git clone 'https://github.com/BitWeb/keeleliin-wrapper-service.git' . && npm install && echo "Run is Done"
 
 RUN mkdir /utils
 COPY ./utils /utils
@@ -30,8 +41,8 @@ RUN unzip /utils/morfyhestaja.zip -d /utils/
 RUN chmod 777 -Rf /utils/*
 
 #Expose port
-EXPOSE  3000
+EXPOSE $SERVER_PORT
 
-VOLUME ["/tmp","/keeleliin_files","/keeleliin_logs", "/config"]
+VOLUME ["/tmp","/files","/logs", "/config"]
 
 CMD /./src/docker_start.sh

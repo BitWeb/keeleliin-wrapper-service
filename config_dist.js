@@ -31,5 +31,9 @@ var config = require('./wrapper_configs/global');
 });*/
 
 config.serverUrl = process.env.SERVER_URL || 'http://dev.bitweb.ee';
-config.wrapper = process.env.WRAPPER ? config.availableWrappers + process.env.WRAPPER : config.availableWrappers.CONCAT;
+config.wrapper = process.env.WRAPPER ? (config.availableWrappers + process.env.WRAPPER) : config.availableWrappers.CONCAT;
+
+config.fs.storagePath = "/files";
+config.fs.tmpPath = "/tmp";
+
 module.exports = config;

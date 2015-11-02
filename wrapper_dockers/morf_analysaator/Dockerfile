@@ -10,7 +10,11 @@ RUN apt-get update && \
 
 RUN npm install -g forever
 
-RUN mkdir -p /src && mkdir -p /tmp && mkdir -p /files && mkdir -p /logs && mkdir -p /config
+RUN mkdir -p /src
+RUN mkdir -p /tmp
+RUN mkdir -p /files
+RUN mkdir -p /logs
+RUN mkdir -p /config
 
 RUN cd /src && git clone 'https://github.com/BitWeb/keeleliin-wrapper-service.git' . && npm install && echo "RunisDon"
 

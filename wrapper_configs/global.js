@@ -19,8 +19,8 @@ config.integration = [
 ];
 
 config.fs = {
-    storagePath: "/files",
-    tmpPath: "/tmp"
+    storagePath: "/wrapper/files",
+    tmpPath: "/wrapper/tmp"
 };
 
 config.paramUsageTypes = {
