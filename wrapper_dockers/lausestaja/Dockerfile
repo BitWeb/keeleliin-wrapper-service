@@ -2,7 +2,7 @@
 #
 #   docker run --name kl_redis --rm --restart=no redis
 #
-#   docker run kl_lausestaja --name kl_lausestaja --link kl_redis:redis -v /wrapper/lausestaja/config:/config kl_lausestaja
+#   docker run --name kl_lausestaja --link kl_redis:redis -p 3001:3001 -v /wrapper/lausestaja/config:/config kl_lausestaja
 #
 #   docker kill kl_lausestaja
 #

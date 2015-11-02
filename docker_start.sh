@@ -10,7 +10,7 @@ fi
 
 if [ ! -f /config/wrapper_configs/global.js ]; then
     mkdir -p /config/wrapper_configs
-    ln -s /src/wrapper_configs/global.js /config/global.js
+    ln -s /src/wrapper_configs/global.js /config/wrapper_configs/global.js
 fi
 
 forever /src/app.js
