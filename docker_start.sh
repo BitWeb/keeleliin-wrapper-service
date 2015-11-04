@@ -11,3 +11,4 @@ if [ ! -f /src/config.js ]; then
 fi
 
 forever /src/app.js
+tail

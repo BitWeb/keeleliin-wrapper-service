@@ -5,23 +5,21 @@
 #   docker rm kl_wrapper
 #
 
-FROM    ubuntu:14.04
+FROM    debian:jessie
 
 RUN apt-get update && \
-    apt-get -y install curl && \
+    apt-get -y install curl sudo && \
     curl -sL https://deb.nodesource.com/setup | sudo bash - && \
     apt-get -y install python build-essential nodejs && \
     apt-get -y install git && echo "Installed"
 
 RUN npm install -g forever
 
-RUN mkdir -p /src && mkdir -p /config && \
+RUN mkdir -p /src && mkdir -p /config && mkdir -p /wrapper/files && mkdir -p /wrapper/tmp && \
 cd /src && \
 git clone 'https://github.com/BitWeb/keeleliin-wrapper-service.git' . && \
 npm install && \
-pwd && \
-ls -la && \
-echo "NPM is installed 3"
+echo "NPM is installed 4"
 
 #Expose port
 EXPOSE  3000
