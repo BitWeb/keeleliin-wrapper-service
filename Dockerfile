@@ -11,7 +11,7 @@ RUN apt-get update && \
     apt-get -y install curl && \
     curl -sL https://deb.nodesource.com/setup | sudo bash - && \
     apt-get -y install python build-essential nodejs && \
-    apt-get -y install git
+    apt-get -y install git && echo "Installed"
 
 RUN npm install -g forever
 
