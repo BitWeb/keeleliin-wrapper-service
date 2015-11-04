@@ -1,40 +1,17 @@
 # Projekti käivitamine dockeriga
 
-* Loo config.js fail
+* KÄIVITA REDIS SERVER
 
-$ cp config_dist.js config.js
+$ docker run --name kl_redis -d redis
 
-* Muuda config.js faili vastavalt soovitud wrapperile
+* Lae alla keeleliin-server Dockerfile
 
-* Loo dockeri konteinerite välised kaustad
+* Loo dockeri Image fail
 
-$ cd /
+$ docker build -t kl_wrapper_name .
 
-$ mkdir wrapper
+* Käivita loodud kl_wrapper_name
 
-$ cd files
-
-$ cd tmp
-
-$ mkdir redis_data
-
-*   RUN OPTIONS
-*   -d                  Jooksuta taustal
-*   --rm                Serveri sulgemisel kustuta konteiner
-*   --restart=no
-*   --restart=always
-* Konteinerit taustal jookustamiseks eemalda --rm ja kasuta --restart=always ning lisa -d
-
-* RUN REDIS SERVER
-
-$ docker run --name kl_wrapper_redis --rm -v /wrapper/redis_data:/data --restart=no redis
-
-* BUILD SERVER
-
-$  docker build -t kl_wrapper_name .
-
-* RUN KEELELIIN SERVER
-
-$ docker run --name kl_wrapper_name --rm -p 3000:3000 --link kl_wrapper_redis:redis -v /wrapper:/wrapper --restart=no kl_wrapper_name
+$ docker run --name kl_wrapper -d -it --link kl_redis:redis -p 3000:3000 -v /wrapper/concat:/src kl_wrapper
 
 
