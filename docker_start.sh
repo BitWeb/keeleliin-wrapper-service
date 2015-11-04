@@ -11,4 +11,4 @@ if [ ! -f /src/config.js ]; then
 fi
 
 forever start /src/app.js
-top
+tail -f /src/wrapper.log

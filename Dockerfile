@@ -21,7 +21,7 @@ git clone 'https://github.com/BitWeb/keeleliin-wrapper-service.git' . && \
 npm install && \
 pwd && \
 ls -la && \
-echo "NPM is installed 1"
+echo "NPM is installed 2"
 
 #Expose port
 EXPOSE  3000

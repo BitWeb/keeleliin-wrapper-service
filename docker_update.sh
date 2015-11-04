@@ -10,4 +10,3 @@ fi
 
 forever restartall
 forever list
-top
