@@ -13,15 +13,14 @@ router.get('/config', function(req, res) {
 
 router.post('/', function ( req, res ) {
 
-    logger.debug(req.body);
-    logger.debug(req.files);
-
     var serviceRequest = new ServiceRequest( req.body, req.files );
 
     if(!serviceRequest.isValid()){
         res.send(serviceRequest.getMessages());
         return;
     }
+
+    logger.debug(serviceRequest );
 
     wrapperService.execute( serviceRequest, function (err, data) {
         if(err) return res.send({errors: err});

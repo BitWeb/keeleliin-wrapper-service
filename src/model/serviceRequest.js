@@ -44,7 +44,7 @@ function ServiceRequest( requestBody, requestFiles ) {
                 continue;
             }
 
-            if(!value){
+            if(value === null || value === undefined){
                 value = mapping.value;
             }
 

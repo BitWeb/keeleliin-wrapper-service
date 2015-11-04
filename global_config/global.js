@@ -5,13 +5,9 @@ config.redis = {
     port: process.env.REDIS_PORT_6379_TCP_PORT || 6379
 };
 
-config.serverUrl = 'http://dev.bitweb.ee';
+config.serverUrl = 'http://localhost';
 
 config.integration = [
-    {
-        installUrl: 'http://dev.bitweb.ee:3000/api/v1/service/install',
-        apiKey: 'server-wrapper-api-key'
-    },
     {
         installUrl: 'http://keeleliin.keeleressursid.ee:3000/api/v1/service/install',
         apiKey: 'server-wrapper-api-key'
@@ -21,6 +17,11 @@ config.integration = [
 config.fs = {
     storagePath: "/wrapper/files",
     tmpPath: "/wrapper/tmp"
+};
+
+config.paramTypes = {
+    TEXT: 'text',
+    SELECT: 'select'
 };
 
 config.paramUsageTypes = {
@@ -33,7 +34,7 @@ config.log4js = {
     appenders: [
         {
             "type": "logLevelFilter",
-            "level": "ERROR",
+            "level": "DEBUG",
             "appender": {
                 type: 'console',
                 layout: {
@@ -53,7 +54,7 @@ config.log4js = {
             "level": "ERROR",
             "appender": {
                 type: 'file',
-                filename: '/logs/wrapper.log',
+                filename: __dirname + '/../wrapper.log',
                 layout: {
                     type: 'pattern',
                     pattern: "[%d] %[[%x{port}-%x{pid}][%5.5p]%] %c - %m",
@@ -69,48 +70,8 @@ config.log4js = {
     ]
 };
 
-config.wrapper = {
-    id: null, // unique service identifier
-    title: null,
-    description: '',
-    port: null,
-    class: null,
-    command: null,
-    requestConf: null
-};
-
-config.availableCommands = {
-    TOKENIZER: {
-        commandTemplate: 'python /wrapper/utils/picoutils/tokenizer.py -i [data] -o [output]'
-    },
-    MORFANALYSAATOR: {
-        commandTemplate: '/wrapper/utils/./morfanalyzer.sh [data]'
-    },
-    LAUSESTAJA: {
-        commandTemplate: '/wrapper/utils/./lausestaja.sh [data]'
-    },
-    OSALAUSESTAJA: {
-        commandTemplate: '/wrapper/utils/./osalausestaja.sh [data]'
-    },
-    MORFYHESTAJA: {
-        commandTemplate: '/wrapper/utils/./morfyhestaja.sh [data]'
-    },
-    PIND_SYN: {
-        commandTemplate: '/wrapper/utils/./pindsyn.sh [data]'
-    },
-    S6LT_SYN: {
-        commandTemplate: '/wrapper/utils/./s6ltsyn.sh [data]'
-    },
-    CONCAT: {
-        commandTemplate: 'cat [data]'
-    },
-    MORPH_TAGGER: {
-        commandTemplate: 'python /wrapper/utils/picoutils/morph_tagger.py -i [data] -o [output]'
-    }
-};
-
-var isAsyncParamValue = {
-    type: 'select',
+config.isAsyncParamDescription = {
+    type: config.paramTypes.SELECT,
     options: ['0', '1'],
     value: '1',
     usageType: config.paramUsageTypes.META,
@@ -124,8 +85,8 @@ var isAsyncParamValue = {
     }
 };
 
-var stringKeyValue = {
-    type: 'text',
+config.stringKeyDescription = {
+    type: config.paramTypes.TEXT,
     value: undefined,
     usageType: config.paramUsageTypes.STRING,
     filter: null,
@@ -136,8 +97,8 @@ var stringKeyValue = {
     }
 };
 
-var fileKeyValue = {
-    type: 'text',
+config.fileKeyDescription = {
+    type: config.paramTypes.TEXT,
     value: undefined,
     usageType: config.paramUsageTypes.FILE,
     filter: null,
@@ -148,18 +109,62 @@ var fileKeyValue = {
     }
 };
 
+config.wrapper = {
+    id: null, // unikaalne lühinimi
+    title: null, //Avalik nimi
+    description: '', //Kirjeldus
+    port: null, //port
+    class: null,    //wrapperi failinimi wrapper kaustast, mida utiliidi käivitamiseks kasutatakse
+    command: null,  // utiliidi käsurea käsk
+    requestConf: null,   //Päringu seadistus
+    outputTypes: null, //teenuse väljundressursside kirjldus
+    sessionMaxLifetime: 600 // sessiooni maksimaalne kestvus
+};
+
+config.availableCommands = {
+    TOKENIZER: {
+        commandTemplate: 'python /var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/picoutils/tokenizer.py -i [data] -o [output]'
+    },
+    MORFANALYSAATOR: {
+        commandTemplate: '/var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/./morfanalyzer.sh [data]'
+    },
+    LAUSESTAJA: {
+        commandTemplate: '/var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/./lausestaja.sh [data]'
+    },
+    OSALAUSESTAJA: {
+        commandTemplate: '/var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/./osalausestaja.sh [data]'
+    },
+    MORFYHESTAJA: {
+        commandTemplate: '/var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/./morfyhestaja.sh [data]'
+    },
+    PIND_SYN: {
+        commandTemplate: '/var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/./pindsyn.sh [data]'
+    },
+    S6LT_SYN: {
+        commandTemplate: '/var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/./s6ltsyn.sh [data]'
+    },
+    CONCAT: {
+        commandTemplate: 'cat [data]'
+    },
+    MORPH_TAGGER: {
+        commandTemplate: 'python /var/www/bitweb.ee/keeleliin.bitweb.ee/wrapper/utils/picoutils/morph_tagger.py -i [data] -o [output]'
+    }
+};
+
+
+
 config.availableWrappers = {
 
     LAUSESTAJA: {
         title: 'Lausestaja',
         description: '',
         id: 'lau',
-        port: process.env.SERVER_PORT || 3001,
+        port: 3001,
         class: 'simpleLocalCommand',
         command: config.availableCommands.LAUSESTAJA,
         requestConf: {
             requestBodyParamsMappings: {
-                isAsync: isAsyncParamValue
+                isAsync: config.isAsyncParamDescription
             },
             requestFiles: {
                 content: {
@@ -182,12 +187,12 @@ config.availableWrappers = {
         title: 'Morfoloogiline analüüs',
         description: '',
         id: 'moa',
-        port: process.env.SERVER_PORT || 3002,
+        port: 3002,
         class: 'simpleLocalCommand',
         command: config.availableCommands.MORFANALYSAATOR,
         requestConf: {
             requestBodyParamsMappings: {
-                isAsync: isAsyncParamValue
+                isAsync: config.isAsyncParamDescription
             },
             requestFiles: {
                 content: {
@@ -210,12 +215,12 @@ config.availableWrappers = {
         title: 'Osalausestaja',
         description: '',
         id: 'osl',
-        port: process.env.SERVER_PORT || 3003,
+        port: 3003,
         class: 'simpleLocalCommand',
         command: config.availableCommands.OSALAUSESTAJA,
         requestConf: {
             requestBodyParamsMappings: {
-                isAsync: isAsyncParamValue
+                isAsync: config.isAsyncParamDescription
             },
             requestFiles: {
                 content: {
@@ -238,12 +243,12 @@ config.availableWrappers = {
         title: 'Morfoloogiline ühestamine (kitsenduste grammatika)',
         description: '',
         id: 'moy',
-        port: process.env.SERVER_PORT || 3004,
+        port: 3004,
         class: 'simpleLocalCommand',
         command: config.availableCommands.MORFYHESTAJA,
         requestConf: {
             requestBodyParamsMappings: {
-                isAsync: isAsyncParamValue
+                isAsync: config.isAsyncParamDescription
             },
             requestFiles: {
                 content: {
@@ -266,12 +271,12 @@ config.availableWrappers = {
         title: 'Pindsüntaktiline analüüs',
         description: '',
         id: 'pia',
-        port: process.env.SERVER_PORT || 3005,
+        port: 3005,
         class: 'simpleLocalCommand',
         command: config.availableCommands.PIND_SYN,
         requestConf: {
             requestBodyParamsMappings: {
-                isAsync: isAsyncParamValue
+                isAsync: config.isAsyncParamDescription
             },
             requestFiles: {
                 content: {
@@ -294,12 +299,12 @@ config.availableWrappers = {
         title: 'Sõltuvussüntaktiline analüüs (ja järeltöötlus)',
         description: '',
         id: 's6a',
-        port: process.env.SERVER_PORT || 3006,
+        port: 3006,
         class: 'simpleLocalCommand',
         command: config.availableCommands.S6LT_SYN,
         requestConf: {
             requestBodyParamsMappings: {
-                isAsync: isAsyncParamValue
+                isAsync: config.isAsyncParamDescription
             },
             requestFiles: {
                 content: {
@@ -323,11 +328,11 @@ config.availableWrappers = {
         title: 'Arhiivi lahtipakkija',
         description: '',
         id: 'uzip',
-        port: process.env.SERVER_PORT || 3007,
+        port: 3007,
         class: 'archiveExtractor',
         requestConf: {
             requestBodyParamsMappings: {
-                isAsync: isAsyncParamValue
+                isAsync: config.isAsyncParamDescription
             },
             requestFiles: {
                 content: {
@@ -350,12 +355,12 @@ config.availableWrappers = {
         title: 'Sõnestaja pipe',
         description: '',
         id: 'tok',
-        port: process.env.SERVER_PORT || 3008,
+        port: 3008,
         class: 'inputOutputLocalCommand',
         command: config.availableCommands.TOKENIZER,
         requestConf: {
             requestBodyParamsMappings: {
-                isAsync: isAsyncParamValue
+                isAsync: config.isAsyncParamDescription
             },
             requestFiles: {
                 content: {
@@ -377,12 +382,12 @@ config.availableWrappers = {
     CONCAT: {
         title: 'Lihtne konkateneerija',
         id: 'concat',
-        port: process.env.SERVER_PORT || 3009,
+        port: 3009,
         class: 'simpleLocalCommand',
         command: config.availableCommands.CONCAT,
         requestConf: {
             requestBodyParamsMappings: {
-                isAsync: isAsyncParamValue
+                isAsync: config.isAsyncParamDescription
             },
             requestFiles: {
                 content: {
@@ -404,12 +409,12 @@ config.availableWrappers = {
     MORPH_TAGGER: {
         title: 'Morfoloogiline ühestaja pipe',
         id: 'tag',
-        port: process.env.SERVER_PORT || 3010,
+        port: 3010,
         class: 'inputOutputLocalCommand',
         command: config.availableCommands.MORPH_TAGGER,
         requestConf: {
             requestBodyParamsMappings: {
-                isAsync: isAsyncParamValue
+                isAsync: config.isAsyncParamDescription
             },
             requestFiles: {
                 content: {

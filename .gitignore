@@ -11,5 +11,5 @@ tmp_tests/94megafile
 tmp_tests/189megafile
 keeleliin.log
 coverage
-wrapper_configs/local_global.js
+global_config/local_global.js
 updateWrappers.sh

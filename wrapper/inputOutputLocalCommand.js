@@ -13,41 +13,33 @@ function InputOutputLocalCommand(){
     var self = this;
 
     this.process = function ( session, callback) {
-        var contentFile = session.requestFiles.content;
 
-        fs.readFile(contentFile, 'utf-8', function (err, sourceText) {
+        self._getCommandModel(session, function (err, model) {
+            logger.debug('getCommandModel callback');
+            if(err) return callback(err);
 
-            if(err){
-                session.setErrors(err);
-                return callback( err, session );
-            }
+            localExecutor.execute( model, session, function ( err, response ) {
 
-            self._getCommandModel(session, function (err, model) {
-                logger.debug('getCommandModel callback');
                 if(err) return callback(err);
+                logger.debug('Program is finished');
 
-                localExecutor.execute( model, session, function ( err, response ) {
+                if(response.isSuccess){
+                    session.message = Session.messages.OK;
+                } else {
+                    session.setErrors(response.errors);
+                }
 
-                    if(err) return callback(err);
-                    logger.debug('Program is finished');
-
-                    if(response.isSuccess){
-                        session.message = Session.messages.OK;
-                    } else {
-                        session.setErrors(response.errors);
-                    }
-
-                    session.addOutputFile('output', {
-                        type: 'output',
-                        fileName: config.wrapper.id + '_output.' + FileUtil.getExtension( model.outputPaths.output ),
-                        filePath: model.outputPaths.output,
-                        contentType: mime.lookup(model.outputPaths.output)
-                    });
-
-                    return callback( err, session );
+                session.addOutputFile('output', {
+                    type: 'output',
+                    fileName: config.wrapper.id + '_output.' + FileUtil.getExtension( model.outputPaths.output ),
+                    filePath: model.outputPaths.output,
+                    contentType: mime.lookup(model.outputPaths.output)
                 });
+
+                return callback( err, session );
             });
         });
+
     };
 
     this._getCommandModel = function (session, callback) {

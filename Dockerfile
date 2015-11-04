@@ -1,25 +1,23 @@
+#   docker build -t kl_wrapper .
+#   docker run --name kl_redis --rm --restart=no redis
+#   docker run --name kl_wrapper -d -it --link kl_redis:redis -p 3000:3000 -v /config:/config -v /logs:/logs kl_wrapper
+#   docker kill kl_wrapper
+#   docker rm kl_wrapper
+#
+
 FROM    ubuntu:14.04
 
-MAINTAINER priit@bitweb.ee
+RUN apt-get update && apt-get -y install nodejs npm git
 
-RUN apt-get update && \
-    apt-get -y install curl && \
-    curl -sL https://deb.nodesource.com/setup | sudo bash - && \
-    apt-get -y install python build-essential nodejs
+RUN npm install -g forever
 
-# Provides cached layer for node_modules
-ADD package.json /tmp/package.json
-RUN cd /tmp && npm install && npm install -g forever
-RUN mkdir -p /src && cp -a /tmp/node_modules /src/
+RUN mkdir -p /src
+RUN cd /src && git clone 'https://github.com/BitWeb/keeleliin-wrapper-service.git' . && echo "Git is cloned 1"
+RUN cd /src && npm install && echo "NPM is installed 1"
 
-# Define working directory
-WORKDIR /src
-ADD . /src
-
-# Expose port
+#Expose port
 EXPOSE  3000
 
-VOLUME ["/wrapper"]
+VOLUME ["/src"]
 
-# Run app using forever
-CMD ["forever", "/src/app.js"]
+CMD /./src/docker_start.sh
