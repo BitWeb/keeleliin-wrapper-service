@@ -10,5 +10,4 @@ if [ ! -f /src/config.js ]; then
     cp -R -u -p /src/config_dist.js /src/config.js
 fi
 
-forever start /src/app.js
-tail -f /src/wrapper.log
+forever /src/app.js
