@@ -1,6 +1,8 @@
 #!/bin/bash
 
-cp -R -u -p /src/config_dist.js /config/config.js
+if [ ! -f /config/config.js ]; then
+    cp -R -u -p /src/config_dist.js /config/config.js
+fi
 
 if [ -f /config/config.js ]; then
     cp /config/config.js /src/config.js

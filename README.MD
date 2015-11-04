@@ -12,6 +12,6 @@ $ docker build -t kl_wrapper_name .
 
 * Käivita loodud kl_wrapper_name
 
-$ docker run --name kl_wrapper -d -it --link kl_redis:redis -p 3000:3000 -v /wrapper/concat:/src kl_wrapper
+$ docker run --name kl_wrapper_name -d --link kl_redis:redis -p 3000:3000 -v /wrapper/concat/:/config kl_wrapper_name
 
 
