@@ -9,7 +9,10 @@ function WrapperService() {
     this.execute = function(serviceRequest, callback) {
 
         sessionService.createSession(serviceRequest, function (err, session) {
-            if(err) return callback(err);
+            if(err){
+                logger.debug('Session creation error', err);
+                return callback(err);
+            }
 
             if (session.isAsync == true) {
                 self.getServiceResponse(session.id, callback);
@@ -18,13 +21,18 @@ function WrapperService() {
             var processor = new Processor();
 
             processor.process( session, function ( err, session ) {
-                if(err) return callback(err);
+                if(err){
+                    logger.debug('Session creation error', err);
+                    return callback(err);
+                }
 
                 sessionService.closeSession(session, function (err, session) {
                     logger.debug('Sessioon on lõpetanud ja savestatud. isAsync:' + session.isAsync);
                     if (session.isAsync == false) {
                         logger.debug('Send response');
-                        if(err) return callback(err);
+                        if(err){
+                            return callback(err);
+                        }
                         self.getServiceResponse(session.id, callback);
                     }
                 });

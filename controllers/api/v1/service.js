@@ -25,7 +25,7 @@ router.post('/', function ( req, res ) {
 
     wrapperService.execute( serviceRequest, function (err, data) {
         if(err){
-            logger.debug('Got error');
+            logger.debug('Got error', err);
             return res.send({errors: err});
         }
         res.send(data);
