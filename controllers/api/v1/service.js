@@ -16,6 +16,7 @@ router.post('/', function ( req, res ) {
     var serviceRequest = new ServiceRequest( req.body, req.files );
 
     if(!serviceRequest.isValid()){
+        logger.debug('Invalid request');
         res.send(serviceRequest.getMessages());
         return;
     }
@@ -23,7 +24,10 @@ router.post('/', function ( req, res ) {
     logger.debug(serviceRequest );
 
     wrapperService.execute( serviceRequest, function (err, data) {
-        if(err) return res.send({errors: err});
+        if(err){
+            logger.debug('Got error');
+            return res.send({errors: err});
+        }
         res.send(data);
     });
 });
