@@ -33,11 +33,7 @@ function SimpleLocalCommand(){
                     session.setErrors(response.errors);
                 }
 
-
-                logger.debug( config.wrapper );
-                logger.debug( config.wrapper.outputTypes.pop() );
-
-                var outputType = config.wrapper.outputTypes.pop();
+                var outputType = config.wrapper.outputTypes[0];
 
                 logger.debug( outputType );
 
