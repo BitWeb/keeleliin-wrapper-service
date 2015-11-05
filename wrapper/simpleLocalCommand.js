@@ -35,8 +35,6 @@ function SimpleLocalCommand(){
 
                 var outputType = config.wrapper.outputTypes[0];
 
-                logger.debug( outputType );
-
                 session.addOutputFile('id_x', {
                     key : outputType.key,
                     type: outputType.type,
@@ -44,10 +42,6 @@ function SimpleLocalCommand(){
                     filePath: response.stdOutPath,
                     contentType: mime.lookup(response.stdOutPath)
                 });
-
-                logger.debug( 'File is set' );
-
-
 
                 return callback( err, session );
             });

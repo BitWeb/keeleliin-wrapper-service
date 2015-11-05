@@ -32,7 +32,7 @@ function LocalCommandTemplate(){
                     session.setErrors(response.errors);
                 }
 
-                var outputType = config.wrapper.outputTypes.pop();
+                var outputType = config.wrapper.outputTypes[0];
 
                 session.addOutputFile('id_x', {
                     key : outputType.key,
