@@ -8,10 +8,10 @@ config.redis = {
 config.serverUrl = 'http://localhost';
 
 config.integration = [
-    {
+    /*{
         installUrl: 'http://keeleliin.keeleressursid.ee:3000/api/v1/service/install',
         apiKey: 'server-wrapper-api-key'
-    }
+    }*/
 ];
 
 config.fs = {
@@ -22,12 +22,6 @@ config.fs = {
 config.paramTypes = {
     TEXT: 'text',
     SELECT: 'select'
-};
-
-config.paramUsageTypes = {
-    META: 'meta', //ei kasutata utiliidi parameetrina
-    STRING: 'string', //parameeter  asendatakse väärtusega
-    FILE: 'file' //parameeteri väärtus salvestatakse faili ja faili pathi kasutatakse argumendina
 };
 
 config.log4js = {
@@ -74,7 +68,6 @@ config.isAsyncParamDescription = {
     type: config.paramTypes.SELECT,
     options: ['0', '1'],
     value: '1',
-    usageType: config.paramUsageTypes.META,
     filter: function (value) {
         return value == 1;
     },
@@ -88,7 +81,6 @@ config.isAsyncParamDescription = {
 config.stringKeyDescription = {
     type: config.paramTypes.TEXT,
     value: undefined,
-    usageType: config.paramUsageTypes.STRING,
     filter: null,
     required: false,
     allowEmpty: true,
@@ -100,7 +92,6 @@ config.stringKeyDescription = {
 config.fileKeyDescription = {
     type: config.paramTypes.TEXT,
     value: undefined,
-    usageType: config.paramUsageTypes.FILE,
     filter: null,
     required: false,
     allowEmpty: true,

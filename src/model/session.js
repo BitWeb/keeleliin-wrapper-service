@@ -36,12 +36,12 @@ Session.prototype.getFile = function( key ){
 };
 
 Session.prototype.getFiles = function( key ){
-    var fileValue = this.requestFiles[ key ];
+    var fileValues = this.requestFiles[ key ];
 
-    if(Array.isArray(fileValue)){
-        return fileValue;
+    if(Array.isArray(fileValues)){
+        return fileValues;
     }
-    return [fileValue];
+    return [fileValues];
 };
 
 Session.messages = {
