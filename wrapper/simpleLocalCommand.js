@@ -14,6 +14,8 @@ function SimpleLocalCommand(){
 
     this.process = function ( session, callback) {
 
+        logger.debug('Start processing');
+
         self._getCommandModel(session, function (err, model) {
             logger.debug('GetCommandModel callback');
             if(err){
