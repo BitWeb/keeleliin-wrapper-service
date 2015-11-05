@@ -45,7 +45,7 @@ config.log4js = {
         },
         {
             "type": "logLevelFilter",
-            "level": "ERROR",
+            "level": "DEBUG",
             "appender": {
                 type: 'file',
                 filename: __dirname + '/../wrapper.log',

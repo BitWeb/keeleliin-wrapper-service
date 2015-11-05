@@ -28,6 +28,7 @@ router.post('/', function ( req, res ) {
             logger.debug('Got error', err);
             return res.send({errors: err});
         }
+        logger.debug('Send response');
         res.send(data);
     });
 });

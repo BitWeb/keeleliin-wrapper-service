@@ -10,7 +10,7 @@ function WrapperService() {
 
         sessionService.createSession(serviceRequest, function (err, session) {
             if(err){
-                logger.debug('Session creation error', err);
+                logger.error('Session creation error', err);
                 return callback(err);
             }
 
