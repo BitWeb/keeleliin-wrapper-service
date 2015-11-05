@@ -31,8 +31,11 @@ function SimpleLocalCommand(){
                     session.setErrors(response.errors);
                 }
 
-                session.addOutputFile('output', {
-                    type: 'output',
+                var outputType = config.wrapper.outputTypes.pop();
+
+                session.addOutputFile('id_x', {
+                    key : outputType.key,
+                    type: outputType.type,
                     fileName: config.wrapper.id + '_output.' + FileUtil.getExtension( response.stdOutPath ),
                     filePath: response.stdOutPath,
                     contentType: mime.lookup(response.stdOutPath)

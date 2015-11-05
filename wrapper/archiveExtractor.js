@@ -155,7 +155,8 @@ function ArchiveExtractor() {
                         var filePath = files[i];
                         var fileName = files[i].substring(filePath.indexOf(session.id) + session.id.length + 1);
                         session.addOutputFile(uniqid, {
-                            type: 'output',
+                            key: 'output',
+                            type: 'text',
                             filePath: filePath,
                             fileName: fileName,
                             contentType: mime.lookup(filePath) // getting the original file mime type

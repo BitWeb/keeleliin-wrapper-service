@@ -29,8 +29,11 @@ function InputOutputLocalCommand(){
                     session.setErrors(response.errors);
                 }
 
-                session.addOutputFile('output', {
-                    type: 'output',
+                var outputType = config.wrapper.outputTypes.pop();
+
+                session.addOutputFile('id_x', {
+                    key : outputType.key,
+                    type: outputType.type,
                     fileName: config.wrapper.id + '_output.' + FileUtil.getExtension( model.outputPaths.output ),
                     filePath: model.outputPaths.output,
                     contentType: mime.lookup(model.outputPaths.output)
