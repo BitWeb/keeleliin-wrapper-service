@@ -211,7 +211,8 @@ function SessionService() {
         var filesList = [];
         for(var i in session.outputFiles){
             filesList.push({
-                key: i,
+                id: i,
+                key: session.outputFiles[i].key,
                 type: session.outputFiles[i].type,
                 fileName: session.outputFiles[i].fileName,
                 contentType: session.outputFiles[i].contentType
