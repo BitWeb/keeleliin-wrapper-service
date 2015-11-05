@@ -16,8 +16,8 @@ var Session = function( id ){
     this.pid = null; //system process id
 };
 
-Session.prototype.addOutputFile = function(key, path){
-    this.outputFiles[key] = path;
+Session.prototype.addOutputFile = function(key, file){
+    this.outputFiles[key] = file;
 };
 
 Session.prototype.setErrors = function(errors){
@@ -26,7 +26,7 @@ Session.prototype.setErrors = function(errors){
     this.message = Session.messages.ERROR
 };
 
-Session.prototype.getFile = function( key ){
+Session.prototype.getRequestFile = function( key ){
     var fileValue = this.requestFiles[ key ];
 
     if(Array.isArray(fileValue)){
@@ -35,7 +35,7 @@ Session.prototype.getFile = function( key ){
     return fileValue;
 };
 
-Session.prototype.getFiles = function( key ){
+Session.prototype.getRequestFiles = function( key ){
     var fileValues = this.requestFiles[ key ];
 
     if(Array.isArray(fileValues)){

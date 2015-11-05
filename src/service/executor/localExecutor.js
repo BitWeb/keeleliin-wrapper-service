@@ -27,8 +27,8 @@ function LocalExecutor() {
         var command = localCommand.command;
         var commandParams = localCommand.commandParams;
 
-        logger.debug(localCommand.command);
-        logger.debug(localCommand.commandParams);
+        //logger.debug(localCommand.command);
+        //logger.debug(localCommand.commandParams);
 
         var process = spawn(command, commandParams);
 

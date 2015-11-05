@@ -50,7 +50,7 @@ function SimpleLocalCommand(){
         var model = new CommandModel();
         model.serviceProperties.commandTemplate = config.wrapper.command.commandTemplate;
         model.init( session );
-        model.setKeyValue('data', session.getFiles('content'));
+        model.setKeyValue('data', session.getRequestFiles('content'));
         model.render(function (err) {
             logger.debug('Render callback');
             callback(err, model);

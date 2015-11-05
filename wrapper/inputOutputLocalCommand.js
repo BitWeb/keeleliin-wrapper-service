@@ -50,7 +50,7 @@ function InputOutputLocalCommand(){
 
         model.serviceProperties.commandTemplate = config.wrapper.command.commandTemplate;
         model.init( session );
-        model.setKeyValue('data', session.getFile('content'));
+        model.setKeyValue('data', session.getRequestFile('content'));
         model.addOutputPath('output', {extension: 'txt'});
         model.render(function (err) {
             logger.debug('Render callback');
