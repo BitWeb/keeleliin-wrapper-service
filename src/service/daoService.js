@@ -21,6 +21,7 @@ var DaoService = function(){
 
         this.client.set(prefix + key, JSON.stringify(value), function (err, reply) {
             if(cb != undefined){
+                self.client.expire(prefix + key, config.wrapper.sessionMaxLifetime );
                 cb(err, reply);
             }
         });

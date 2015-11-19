@@ -1,5 +1,7 @@
 var logger = require('log4js').getLogger('service_request');
 var config = require('../../config');
+var fs = require('fs');
+var async = require('async');
 
 function ServiceRequest( requestBody, requestFiles ) {
     var self = this;
@@ -8,10 +10,11 @@ function ServiceRequest( requestBody, requestFiles ) {
     this.files = requestFiles;
     var messages = null;
 
-    this.isValid = function(){
+    this.isValid = function( cb ){
         self._mapParams();
-        self._checkFiles();
-        return messages == null;
+        self._checkFiles(function (err) {
+            cb(err, messages == null);
+        });
     };
 
     this.setMessage = function (key, value) {
@@ -55,14 +58,48 @@ function ServiceRequest( requestBody, requestFiles ) {
         }
     };
 
-    this._checkFiles = function () {
+    this._checkFiles = function ( cb ) {
 
-        for( var fileId in config.wrapper.requestConf.requestFiles ){
-            if(!self.files[fileId]){
+        async.forEachOf(config.wrapper.requestConf.requestFiles, function (requestFile, fileId, innerCb) {
+
+            logger.debug( requestFile );
+            logger.debug( fileId );
+
+            var fileItem = self.files[fileId];
+
+            if(!fileItem){
                 logger.error('Nõutud faili ei saadetud' + fileId, self.files);
                 self.setMessage(fileId, 'Nõutud faili ei saadetud');
+                return innerCb();
             }
-        }
+
+            if(requestFile.isList == false && Array.isArray( fileItem )){
+                self.setMessage(fileId, 'Lubatud on ainult 1 fail');
+                return innerCb();
+            }
+
+            if(requestFile.sizeLimit > 0){
+
+                var limitLeft = requestFile.sizeLimit;
+
+                if( Array.isArray( fileItem ) ){
+                    for(i in fileItem){
+                        var fileItemItem = fileItem[i];
+                        var stat = fs.statSync(fileItemItem.path);
+                        limitLeft = limitLeft - stat.size;
+                    }
+                } else {
+                    var stat = fs.statSync(fileItem.path);
+                    limitLeft = limitLeft - stat.size;
+                }
+
+                if(limitLeft < 0){
+                    self.setMessage(fileId, 'Saadetud failide mahu piirang ületati');
+                }
+            }
+
+            return innerCb();
+        }, cb);
     };
 
     this.getMessages = function(){

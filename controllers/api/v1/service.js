@@ -15,21 +15,22 @@ router.post('/', function ( req, res ) {
 
     var serviceRequest = new ServiceRequest( req.body, req.files );
 
-    if(!serviceRequest.isValid()){
-        logger.debug('Invalid request');
-        res.send(serviceRequest.getMessages());
-        return;
-    }
+    serviceRequest.isValid(function (err, isValid) {
 
-    logger.debug(serviceRequest );
-
-    wrapperService.execute( serviceRequest, function (err, data) {
-        if(err){
-            logger.debug('Got error', err);
-            return res.send({errors: err});
+        if(err || !isValid){
+            logger.debug('Invalid request');
+            res.send(serviceRequest.getMessages());
+            return;
         }
-        logger.debug('Send response');
-        res.send(data);
+
+        wrapperService.execute( serviceRequest, function (err, data) {
+            if(err){
+                logger.debug('Got error', err);
+                return res.send({errors: err});
+            }
+            logger.debug('Send response');
+            return res.send(data);
+        });
     });
 });
 
