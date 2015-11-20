@@ -206,7 +206,7 @@ config.availableWrappers = {
         title: 'Osalausestaja',
         description: '',
         id: 'osl',
-        port: 3003,
+        port: 3011,
         class: 'simpleLocalCommand',
         command: config.availableCommands.OSALAUSESTAJA,
         requestConf: {
