@@ -189,6 +189,7 @@ function SessionService() {
 
         response.success = session.success;
         response.message = session.message;
+        response.log = session.log;
 
         if(session.errors != null){
             response.errors = session.errors;

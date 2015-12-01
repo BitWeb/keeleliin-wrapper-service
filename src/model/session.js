@@ -1,6 +1,5 @@
-/**
- * Created by priit on 1.06.15.
- */
+var logger = require('log4js').getLogger('session_model');
+
 var Session = function( id ){
     this.isAsync = false;
     this.isFinished = false;
@@ -14,6 +13,7 @@ var Session = function( id ){
     this.outputFiles = {};
     this.errors = null;
     this.pid = null; //system process id
+    this.log = [];
 };
 
 Session.prototype.addOutputFile = function(key, file){
@@ -24,6 +24,14 @@ Session.prototype.setErrors = function(errors){
     this.errors = errors;
     this.isSuccess = false;
     this.message = Session.messages.ERROR
+};
+
+Session.prototype.addLog = function(log){
+
+    if( ! this.log instanceof Array){
+        logger.error('Session is not array: ', this.log);
+    }
+    this.log.push( log );
 };
 
 Session.prototype.getRequestFile = function( key ){

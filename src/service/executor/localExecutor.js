@@ -34,10 +34,12 @@ function LocalExecutor() {
 
         logger.debug('Created process: ', process);
 
+        session.pid = process.pid;
+
+        session.addLog({command: command, attributes: commandParams});
 
         async.waterfall([
             function (callback) {
-                session.pid = process.pid;
                 sessionService.saveSession( session, function (err, session) {
                     callback();
                 });
