@@ -73,7 +73,7 @@ function ArchiveExtractor() {
                         return callback(err, session);
                     }
 
-                    if (isFile && isTextOrBinary.isTextSync(entry.path)) {
+                    if (isFile /*&& isTextOrBinary.isTextSync(entry.path)*/) {
                         var uniqid = randomstring.generate(10);
                         var filePath = path.join(directory, uniqid);
                         logger.debug('Filepath: ' + filePath);
