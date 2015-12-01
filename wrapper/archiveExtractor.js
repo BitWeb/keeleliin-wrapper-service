@@ -21,8 +21,6 @@ function ArchiveExtractor() {
     this.process = function(session, callback) {
         var zipFile = session.requestFiles.content;
         var read = fs.readFileSync(zipFile);
-        var zip = isZip(read);
-        var gzip = isTar(read);
 
         if (isZip(read)) {
             return self._extractZipFile(zipFile, session, callback);
@@ -64,7 +62,7 @@ function ArchiveExtractor() {
                 var savePath = SessionService.getStorePath(session.id);
                 var fullpath = path.join(savePath, entry.path);
                 logger.debug('Fullpath: ' + fullpath);
-                var directory = (isFile ? path.dirname(fullpath) : fullpath);
+                var directory = isFile ? path.dirname(fullpath) : fullpath;
 
                 logger.debug('Countx: ' + count);
 
@@ -92,7 +90,7 @@ function ArchiveExtractor() {
                             checkForCallback();
                         });
                     } else {
-                        logger.debug('Not file and not text or binary on count: ' + count);
+                        logger.debug('Not file and not text or binary on count: ' + count + ' isFile: '+ isFile +' isTextOrBinary: ' + isTextOrBinary.isTextSync(entry.path));
                         count = count - 1;
                         checkForCallback();
                         entry.autodrain();
