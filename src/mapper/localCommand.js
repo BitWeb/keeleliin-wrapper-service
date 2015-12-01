@@ -13,6 +13,9 @@ function LocalCommand( commandModel ) {
     this.command = "";
     this.commandParams = [];
 
+
+
+
     this.generate = function () {
         self._parseParams();
         var paramsArray = commandParts.slice(commandParts);

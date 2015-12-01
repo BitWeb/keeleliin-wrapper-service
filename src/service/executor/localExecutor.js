@@ -32,6 +32,9 @@ function LocalExecutor() {
 
         var process = spawn(command, commandParams);
 
+        logger.debug('Created process: ', process);
+
+
         async.waterfall([
             function (callback) {
                 session.pid = process.pid;

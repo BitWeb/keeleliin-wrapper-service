@@ -1,4 +1,4 @@
-var logger = require('log4js').getLogger('wrapper');
+var logger = require('log4js').getLogger('wrapper_input_output');
 var config = require('./../config');
 var localExecutor = require('./../src/service/executor/localExecutor');
 var Session = require('../src/model/session');
@@ -16,11 +16,16 @@ function InputOutputLocalCommand(){
 
         self._getCommandModel(session, function (err, model) {
             logger.debug('getCommandModel callback');
-            if(err) return callback(err);
+            if(err){
+                logger.error(err);
+                return callback(err);
+            }
 
             localExecutor.execute( model, session, function ( err, response ) {
+                if(err){
+                    return callback(err);
+                }
 
-                if(err) return callback(err);
                 logger.debug('Program is finished');
 
                 if(response.isSuccess){

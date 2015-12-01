@@ -1,3 +1,5 @@
+var logger = require('log4js').getLogger('wrapper_archive_extractor');
+
 var fs = require('fs');
 var unzip = require('unzip');
 var mkdirp = require('mkdirp');
@@ -5,7 +7,6 @@ var path = require('path');
 var SessionService = require('./../src/service/sessionService');
 var Session = require('../src/model/session');
 var randomstring = require('randomstring');
-var logger = require('log4js').getLogger('wrapper');
 var mime = require('mime');
 var isZip = require('is-zip');
 var isGzip = require('is-gzip');
