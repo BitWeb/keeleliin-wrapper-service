@@ -14,7 +14,7 @@ $ docker run --name kl_redis -d redis
 
 $ docker build -t kl_wrapper_name .
 
-* Loo seadistust teenuse faili jaoks dockeri väline kaust
+* Soovi korral loo teenuse seadistuste faili jaoks dockeriväline kaust
 
 $ mkdir -p /wrapper/concat
 
