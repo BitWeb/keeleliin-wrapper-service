@@ -9,7 +9,8 @@ router.use('/api/v1/statistics', require(__base + 'controllers/api/v1/statistics
 router.get('/', function( req, res ) {
 
   res.render('index', {
-    title: config.wrapper.title
+    title: config.wrapper.title,
+    config: JSON.stringify( config.wrapper, null, 4 )
   });
 });
 
