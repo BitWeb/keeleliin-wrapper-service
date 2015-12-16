@@ -70,7 +70,7 @@ config.wrapper = { //teenuse seadistus
     id: 'concat', // Unikaalne lühinimi
     title: 'Lihtne konjateneerija', //Avalik nimi
     description: 'Konkateneerib etteantud failid üheks suureks failiks', //Kirjeldus
-    port: 3000, //port
+    port: 3003, //port
     class: 'simpleLocalCommand',    //wrapperi failinimi wrapper kaustast, mida utiliidi käivitamiseks kasutatakse
     command: 'cat [data]',  // utiliidi käsurea käsk
     requestConf: { //Päringu seadistus

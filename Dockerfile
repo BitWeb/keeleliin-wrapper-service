@@ -22,7 +22,7 @@ npm install && \
 echo "NPM is installed 7"
 
 #Expose port
-EXPOSE  3000
+EXPOSE  3003
 
 VOLUME ["/config"]
 
