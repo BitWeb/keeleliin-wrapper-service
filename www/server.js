@@ -77,13 +77,6 @@ function startCluster( instanceCount, cb ){
 
         cleanerService.init();
 
-        //Lase serveril üles ärgata
-        setTimeout(function(){
-            installService.install(function () {
-                log4jsLogger.trace('Instal callback');
-            })
-        }, ((Math.random() * 20000) + 5000 ));
-
     } else {
         startInstance(cb)
     }

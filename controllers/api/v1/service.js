@@ -10,6 +10,16 @@ router.get('/config', function(req, res) {
     return res.send(installService.getConfiguration());
 });
 
+router.get('/install', function(req, res) {
+    installService.install(function (err, success) {
+        if(err){
+            res.status(520);
+            res.send({errors: err});
+            return;
+        }
+        res.send({responses: success});
+    });
+});
 
 router.post('/', function ( req, res ) {
 

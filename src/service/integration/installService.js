@@ -12,6 +12,12 @@ var InstallService = function() {
         var wrapper = config.wrapper;
         var serviceConfig = self.getConfiguration();
 
+        if(!config.integration || config.integration.length == 0){
+            return cb('Servereid ei ole seadistatud');
+        }
+
+        var messages = [];
+
         async.each(config.integration, function (serverConf, innerCb) {
 
             logger.debug(serverConf);
@@ -22,18 +28,23 @@ var InstallService = function() {
                 json: serviceConfig
             }, function(error, response, body) {
                 if(error){
-                    logger.error( serverConf.installUrl);
-                    logger.error(self.getConfiguration());
+                    logger.error( serverConf.installUrl );
+                    logger.error( self.getConfiguration() );
                     logger.error(error);
-
                     return innerCb(error);
                 }
-                innerCb(null, true);
+
+                messages.push({
+                    url: serverConf.installUrl,
+                    response: body
+                });
+
+                innerCb(null);
             });
 
         }, function (err) {
             logger.debug('Installed');
-            cb(err, true)
+            cb(err, messages)
         });
     };
 
